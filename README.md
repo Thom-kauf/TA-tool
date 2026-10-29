@@ -17,6 +17,11 @@ It runs entirely in your browser from a file on your computer. It has no install
 ### Transcripts
 
 - **Pull a quote:** select words in a transcript and click **Pull quote** in the toolbar that appears, or press **Q**. The toolbar also has one-click buttons for your most recently used codes.
+  - The card saves exactly the words you selected, even if the selection starts or ends mid-sentence, and only those words are highlighted.
+  - Quotes pulled with versions of the tool before October 29, 2026 highlight their whole captions. To fix one, delete the card and pull the quote again.
+- **Open a quote:** click anywhere on a highlighted quote, or on the small box beside its first line. Hovering over a quote underlines the whole passage, so you can see where it starts and ends.
+  - Where two quotes overlap, clicking opens the more recent one.
+  - Ending a text selection on a highlight doesn't open the card, so you can still select overlapping text.
 - **Play from a turn:** click a turn's timecode to play the recording from there. The transcript follows along as it plays.
 - **Add an observation:** press **O** or click **Add observation** while watching. This creates a card at the current moment with a frame from the video. Use it for things you saw rather than heard.
 - **Find words:** use the search box to find words in the current transcript.
@@ -76,7 +81,7 @@ From there you can:
 2. Fix the text, then press **Enter** to finish, or **Esc** to cancel.
 3. Edited captions are underlined with dots. Hover over one to see the original wording.
 
-If a quote card contains the same words, the fix is applied to the card as well.
+If a quote card contains the same words, the fix is applied to the card as well. The quote's highlight stays on the same words after the fix, and after an undo.
 
 **Writing fixes back to the original VTT** (Chrome and Edge): when you save, the tool also updates the transcript files you imported during this sitting, either through **Import files** or by dragging them onto the page. The first time, the browser asks permission to edit each file.
 
