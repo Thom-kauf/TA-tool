@@ -188,15 +188,17 @@ select{padding-right:6px}
 .said{font-family:var(--font-said);font-size:17.5px;line-height:1.62;color:var(--ink);font-optical-sizing:auto}
 .turn.res .said{font-family:var(--font-ui);font-size:14.5px;line-height:1.6;color:var(--ink-2)}
 .turn.res .who{color:var(--ink-3)}
-.cue.q{background:var(--quoted);border-radius:2px;-webkit-box-decoration-break:clone;box-decoration-break:clone;color:var(--ink)}
+.qs{cursor:pointer;background:var(--quoted);-webkit-box-decoration-break:clone;box-decoration-break:clone;color:var(--ink)}
 .cue.now{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:5px}
 mark.hit{background:var(--hit);color:inherit;border-radius:2px;box-shadow:0 0 0 1px var(--hit-edge)}
 mark.hit.cur{background:var(--accent);color:var(--accent-ink);box-shadow:none}
-.marks{display:flex;flex-direction:column;gap:5px;padding-top:7px;user-select:none;-webkit-user-select:none}
+.marks{position:relative;user-select:none;-webkit-user-select:none}
+.marks .mark{position:absolute;left:1px;top:0}
 .mark{width:15px;height:15px;padding:0;border:1px solid var(--note-y-edge);background:var(--note-y);border-radius:1px;transform:rotate(-4deg);box-shadow:var(--note-shadow)}
 .mark.obs{background:var(--panel);border-style:dashed}
 .mark.has-snap{box-shadow:inset 0 -4px 0 var(--note-y-edge),var(--note-shadow)}
 .mark:hover{transform:rotate(0) scale(1.15)}
+.qs.hl{box-shadow:0 2px 0 var(--ink-2)}
 .turn.flash{animation:flash 1.8s ease-out}
 @keyframes flash{0%,30%{background:var(--accent-tint)}100%{background:transparent}}
 .empty-state{max-width:560px;margin:7vh auto 0;display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding:0 4px}
@@ -819,12 +821,14 @@ function normalize(input) {
     const ci = v => { const x = num(v, -1); return Number.isInteger(x) && x >= 0 && x < n ? x : null; };
     let ci0 = ci(c.ci0), ci1 = ci(c.ci1);
     if (ci0 == null) ci1 = null; else if (ci1 == null || ci1 < ci0) ci1 = ci0;
+    const off = (v, i) => { const x = num(v, NaN); return i != null && Number.isInteger(x) ? clamp(x, 0, s.cues[i].t.length) : null; };
+    let o0 = off(c.o0, ci0), o1 = off(c.o1, ci1); if (o0 != null && o1 != null && ci0 === ci1 && o1 <= o0) { o0 = null; o1 = null; }
     const start = Math.max(0, num(c.start, 0));
     const snap = typeof c.snapshot === 'string' && SNAP_RE.test(c.snapshot) ? c.snapshot : null;
     p.cards[id] = {
       id, kind: c.kind === 'obs' ? 'obs' : 'quote', sessionId: s.id, speaker: c.speaker == null || c.speaker === '__proto__' ? null : str(c.speaker, 120),
       text: str(c.text, 20000), note: str(c.note, 20000), tags: [...new Set(list(c.tags).map(t => fixId(t, 'k')).filter(t => codeIds.has(t)))],
-      start, end: Math.max(start, num(c.end, start)), ci0, ci1, snapshot: snap, snapshotTime: snap ? Math.max(0, num(c.snapshotTime, start)) : null, createdAt: num(c.createdAt, Date.now()),
+      start, end: Math.max(start, num(c.end, start)), ci0, ci1, o0, o1, snapshot: snap, snapshotTime: snap ? Math.max(0, num(c.snapshotTime, start)) : null, createdAt: num(c.createdAt, Date.now()),
     };
   }
   const placed = new Set();
@@ -853,7 +857,7 @@ function participantSpeaker(s) { const e = Object.entries(s.speakers || {}).find
 function groupOfCard(id) { for (const gid of P.groupOrder) if (P.groups[gid].cardIds.includes(id)) return P.groups[gid]; return null; }
 function sessionCards(sid) { return Object.values(P.cards).filter(c => c.sessionId === sid); }
 function themeGroups(themeId) { return P.groupOrder.map(id => P.groups[id]).filter(g => (g.themeId || null) === (themeId || null)); }
-function makeCard(o) { return Object.assign({ id: uid('c'), kind: 'quote', sessionId: null, speaker: null, text: '', note: '', tags: [], start: 0, end: 0, ci0: null, ci1: null, snapshot: null, snapshotTime: null, createdAt: Date.now() }, o); }
+function makeCard(o) { return Object.assign({ id: uid('c'), kind: 'quote', sessionId: null, speaker: null, text: '', note: '', tags: [], start: 0, end: 0, ci0: null, ci1: null, o0: null, o1: null, snapshot: null, snapshotTime: null, createdAt: Date.now() }, o); }
 function addCard(c) { P.cards[c.id] = c; P.unsorted.push(c.id); }
 function ensureCode(name) {
   name = String(name || '').trim().replace(/\s+/g, ' ');
@@ -923,7 +927,7 @@ function undo() {
   if (e.extra) {
     const ss = sessionById(e.extra.sid);
     if (ss) e.extra.cues.forEach(r => { const cue = ss.cues[r.i]; if (!cue) return; cue.t = r.t; if (r.o == null) delete cue.o; else cue.o = r.o; });
-    e.extra.cards.forEach(r => { if (P.cards[r.id]) P.cards[r.id].text = r.text; });
+    e.extra.cards.forEach(r => { const c = P.cards[r.id]; if (c) { c.text = r.text; if ('o0' in r) { c.o0 = r.o0; c.o1 = r.o1; } } });
     ui.edit = null;
   }
   ui.selection.clear();
@@ -1204,7 +1208,7 @@ function findSpan(s, phrase) {
   const i = joined.toLowerCase().indexOf(phrase.toLowerCase()); if (i < 0) return null;
   const j = i + phrase.length - 1; let a = 0, b = 0;
   for (let k = 0; k < starts.length; k++) { if (starts[k] <= i) a = k; if (starts[k] <= j) b = k; }
-  return [a, b];
+  return [a, b, i - starts[a], j + 1 - starts[b]];
 }
 function drawExampleFrame(kind) {
   const cv = document.createElement('canvas'); cv.width = 640; cv.height = 360;
@@ -1293,7 +1297,7 @@ function buildExample() {
     const span = findSpan(s, kind === 'quote' ? text : anchor);
     if (!span) continue;
     const quote = kind === 'quote';
-    const c = makeCard({ kind, sessionId: s.id, speaker: participantSpeaker(s), text, note, tags: ks.map(K), start: s.cues[span[0]].s, end: quote ? s.cues[span[1]].e : s.cues[span[0]].s, ci0: quote ? span[0] : null, ci1: quote ? span[1] : null, snapshot: snap ? snaps[snap] : null, snapshotTime: snap ? s.cues[span[0]].s : null });
+    const c = makeCard({ kind, sessionId: s.id, speaker: participantSpeaker(s), text, note, tags: ks.map(K), start: s.cues[span[0]].s, end: quote ? s.cues[span[1]].e : s.cues[span[0]].s, ci0: quote ? span[0] : null, ci1: quote ? span[1] : null, o0: quote ? span[2] : null, o1: quote ? span[3] : null, snapshot: snap ? snaps[snap] : null, snapshotTime: snap ? s.cues[span[0]].s : null });
     p.cards[c.id] = c;
     if (gk) G[gk].cardIds.push(c.id); else p.unsorted.push(c.id);
   }
@@ -1462,11 +1466,11 @@ function renderTranscript(s) {
     $('#tx-search-count').textContent = ''; return;
   }
   const { turns, ciTurn } = getTurns(s);
-  const quoted = new Uint8Array(s.cues.length); const marks = new Map();
+  const qr = new Map(); const marks = new Map();
   for (const c of sessionCards(s.id)) {
     let ti;
-    if (c.kind === 'quote' && c.ci0 != null && c.ci0 < s.cues.length) { const hi = Math.min(c.ci1 == null ? c.ci0 : c.ci1, s.cues.length - 1); for (let i = c.ci0; i <= hi; i++) quoted[i] = 1; ti = ciTurn[c.ci0]; }
-    else { const ci = cueAt(s, c.start); ti = ci < 0 ? 0 : ciTurn[ci]; }
+    if (c.kind === 'quote' && c.ci0 != null && c.ci0 < s.cues.length) { const hi = Math.min(c.ci1 == null ? c.ci0 : c.ci1, s.cues.length - 1); for (let i = c.ci0; i <= hi; i++) { const len = s.cues[i].t.length; const a = i === c.ci0 && c.o0 != null ? clamp(c.o0, 0, len) : 0; const b = i === hi && c.o1 != null ? clamp(c.o1, 0, len) : len; if (b > a) { if (!qr.has(i)) qr.set(i, []); qr.get(i).push({ id: c.id, a, b, last: i === hi }); } } ti = ciTurn[c.ci0]; c._anchor = c.ci0; }
+    else { const ci = cueAt(s, c.start); ti = ci < 0 ? 0 : ciTurn[ci]; c._anchor = ci < 0 ? 0 : ci; }
     if (!marks.has(ti)) marks.set(ti, []); marks.get(ti).push(c);
   }
   const q = ui.search.trim().toLowerCase(); const counter = { n: 0 };
@@ -1482,21 +1486,54 @@ function renderTranscript(s) {
       }
       said = `<div class="tx-edit">${rows.join('')}<div class="ed-actions"><button type="button" class="btn sm primary" data-ed="done">Done</button><button type="button" class="btn sm ghost" data-ed="cancel">Cancel</button><span class="small muted">One box per caption. Enter to finish, Esc to cancel.</span></div></div>`;
     } else {
-      for (let i = t.from; i <= t.to; i++) { const cue = s.cues[i]; said += `<span class="cue${quoted[i] ? ' q' : ''}${cue.o != null ? ' edited' : ''}" data-ci="${i}"${cue.o != null ? ` title="Edited. Original: ${esc(cue.o)}"` : ''}>${hl(cue.t, q.length > 1 ? q : '', counter)}</span> `; }
+      const hq = q.length > 1 ? q : '';
+      for (let i = t.from; i <= t.to; i++) {
+        const cue = s.cues[i]; const rs = qr.get(i) || []; let inner = '';
+        if (!rs.length) inner = hl(cue.t, hq, counter);
+        else {
+          const xs = [...new Set([0, cue.t.length, ...rs.flatMap(r => [r.a, r.b])])].sort((x, y) => x - y);
+          for (let k = 0; k < xs.length - 1; k++) {
+            const x = xs[k], y = xs[k + 1]; if (y <= x) continue;
+            const ids = rs.filter(r => r.a <= x && r.b >= y).map(r => r.id); const piece = hl(cue.t.slice(x, y), hq, counter);
+            inner += ids.length ? `<span class="qs" data-cards="${ids.join(' ')}">${piece}</span>` : piece;
+          }
+        }
+        said += `<span class="cue${cue.o != null ? ' edited' : ''}" data-ci="${i}"${cue.o != null ? ` title="Edited. Original: ${esc(cue.o)}"` : ''}>${inner}</span>`;
+        // the space between two captions is part of any quote that runs across it
+        const across = i < t.to ? rs.filter(r => !r.last && r.b === cue.t.length).map(r => r.id).filter(id => (qr.get(i + 1) || []).some(r => r.id === id && r.a === 0)) : [];
+        said += across.length ? `<span class="qs" data-cards="${across.join(' ')}"> </span>` : ' ';
+      }
       said = `<p class="said">${said}</p>`;
     }
-    const mk = (marks.get(ti) || []).map(c => `<button type="button" class="mark ${c.kind}${c.snapshot ? ' has-snap' : ''}" data-open="${c.id}" title="${esc(markTitle(c))}" aria-label="Open card. ${esc(markTitle(c))}"></button>`).join('');
+    const mk = (marks.get(ti) || []).map(c => `<button type="button" class="mark ${c.kind}${c.snapshot ? ' has-snap' : ''}" data-open="${c.id}" data-anchor="${c._anchor}" title="${esc(markTitle(c))}" aria-label="Open card. ${esc(markTitle(c))}"></button>`).join('');
     parts.push(`<div class="turn${isResearcher(s, t.sp) ? ' res' : ''}${ti === editing ? ' editing' : ''}" data-ti="${ti}"><div class="gutter"><button type="button" class="tcode" data-seek="${t.s}" title="Play from ${tc(t.s)}">${tc(t.s)}</button><span class="who">${esc(speakerName(s, t.sp))}</span>${ti === editing ? '' : `<button type="button" class="ed-btn" data-edit="${ti}" aria-label="Fix typos in the captions at ${tc(t.s)}">Edit</button>`}</div>${said}<div class="marks">${mk}</div></div>`);
   });
   const same = box.dataset.sid === s.id; const keep = scroller.scrollTop;
   box.innerHTML = parts.join(''); box.dataset.sid = s.id;
   $$('#transcript .ed-text').forEach(autosize);
+  positionMarks();
   if (!isNarrow()) scroller.scrollTop = same ? keep : 0;
   else if (!same) window.scrollTo(0, 0);
   ui.hitCount = counter.n; if (ui.hitIdx >= ui.hitCount) ui.hitIdx = ui.hitCount - 1;
   if (ui.hitIdx >= 0) { const m = box.querySelector(`mark[data-hit="${ui.hitIdx}"]`); if (m) m.classList.add('cur'); }
   if (ui.nowCue >= 0) { const el = box.querySelector(`.cue[data-ci="${ui.nowCue}"]`); if (el) el.classList.add('now'); }
   updateSearchCount();
+}
+/* Put each card marker level with the first line of its quote (or the caption at an observation's time).
+   Markers that would overlap move down to the next free slot. */
+function positionMarks() {
+  for (const turn of $$('#transcript .turn')) {
+    const box = turn.querySelector('.marks'); if (!box) continue;
+    const ms = $$('.mark', box); if (!ms.length) continue;
+    const base = box.getBoundingClientRect().top; let next = -Infinity;
+    const placed = ms.map(m => {
+      const cue = (m.classList.contains('quote') && turn.querySelector(`.qs[data-cards~="${m.dataset.open}"]`)) || turn.querySelector(`.cue[data-ci="${m.dataset.anchor}"]`);
+      const r = cue && cue.getClientRects()[0];
+      return { m, y: r ? r.top - base + Math.max(0, (r.height - 15) / 2) : 4 };
+    }).sort((a, b) => a.y - b.y);
+    for (const p of placed) { const y = Math.max(p.y, next); p.m.style.top = Math.round(y) + 'px'; next = y + 19; }
+    box.style.minHeight = Math.round(next) + 'px';
+  }
 }
 function updateSearchCount() {
   const q = ui.search.trim();
@@ -1597,10 +1634,19 @@ function pullQuote(codeId) {
   const text = rangeText(range);
   if (!cues.length || text.length < 2) return false;
   const ci0 = +cues[0].dataset.ci, ci1 = +cues[cues.length - 1].dataset.ci;
+  // where inside the first and last caption the selection starts and ends, trimmed of surrounding spaces
+  const offIn = (el, node, off) => { const r = document.createRange(); r.selectNodeContents(el); r.setEnd(node, off); return r.toString().length; };
+  const t0 = s.cues[ci0].t, t1 = s.cues[ci1].t;
+  let o0 = cues[0].contains(range.startContainer) ? offIn(cues[0], range.startContainer, range.startOffset) : 0;
+  let o1 = cues[cues.length - 1].contains(range.endContainer) ? offIn(cues[cues.length - 1], range.endContainer, range.endOffset) : t1.length;
+  o0 = clamp(o0, 0, t0.length); o1 = clamp(o1, 0, t1.length);
+  while (o0 < t0.length && /\s/.test(t0[o0])) o0++;
+  while (o1 > 0 && /\s/.test(t1[o1 - 1])) o1--;
+  if (ci0 === ci1 && o1 <= o0) { o0 = 0; o1 = t1.length; }
   let speaker = s.cues[ci0].sp;
   for (let i = ci0; i <= ci1; i++) if (!isResearcher(s, s.cues[i].sp)) { speaker = s.cues[i].sp; break; }
   pushUndo('Pull quote');
-  const card = makeCard({ kind: 'quote', sessionId: s.id, speaker, text, start: s.cues[ci0].s, end: s.cues[ci1].e, ci0, ci1, tags: codeId ? [codeId] : [] });
+  const card = makeCard({ kind: 'quote', sessionId: s.id, speaker, text, start: s.cues[ci0].s, end: s.cues[ci1].e, ci0, ci1, o0, o1, tags: codeId ? [codeId] : [] });
   addCard(card); if (codeId) bumpRecent(codeId);
   getSelection().removeAllRanges(); hideSelTool();
   changed(); renderTranscript(s); renderSessionList(); renderSessionMeta(s); renderHeader();
@@ -1640,12 +1686,15 @@ function applyCueEdits(s, changes, label) {
     if (cue.o == null) cue.o = cue.t;
     cue.t = ch.to;
     if (cue.o === cue.t) delete cue.o;
-    const frag = diffFragment(ch.from, ch.to); if (!frag) continue;
+    const frag = diffFragment(ch.from, ch.to);
     for (const c of sessionCards(s.id)) {
       if (c.kind !== 'quote' || c.ci0 == null || ch.i < c.ci0 || ch.i > (c.ci1 == null ? c.ci0 : c.ci1)) continue;
-      if (countOcc(c.text, frag.from) !== 1) continue;
-      if (!touched.has(c.id)) { touched.add(c.id); rec.cards.push({ id: c.id, text: c.text }); }
-      c.text = c.text.replace(frag.from, () => frag.to);
+      const snap = () => { if (!rec.cards.some(r => r.id === c.id)) rec.cards.push({ id: c.id, text: c.text, o0: c.o0, o1: c.o1 }); };
+      if (frag && countOcc(c.text, frag.from) === 1) { snap(); touched.add(c.id); c.text = c.text.replace(frag.from, () => frag.to); }
+      // move the quote's start and end inside this caption to where the same words are now
+      if (c.ci0 === ch.i && c.o0 != null) { snap(); const head = c.text.slice(0, 12); const k = head ? ch.to.indexOf(head) : -1; c.o0 = k >= 0 ? k : Math.min(c.o0, ch.to.length); }
+      if ((c.ci1 == null ? c.ci0 : c.ci1) === ch.i && c.o1 != null) { snap(); const tail = c.text.slice(-12); const k = tail ? ch.to.lastIndexOf(tail) : -1; c.o1 = k >= 0 ? k + tail.length : clamp(c.o1 + ch.to.length - ch.from.length, 0, ch.to.length); }
+      if (c.ci0 === c.ci1 && c.o0 != null && c.o1 != null && c.o1 <= c.o0) { c.o0 = 0; c.o1 = ch.to.length; }
     }
   }
   pushUndo(label, rec);
@@ -2540,14 +2589,35 @@ function bindEvents() {
     const rv = e.target.closest('[data-revert]');
     if (rv && ui.edit) { const s = currentSession(); const i = +rv.dataset.revert; const cue = s && s.cues[i]; if (cue && cue.o != null) { ui.edit.draft[i] = cue.o; const el = $('#ed-' + i); if (el) { el.value = cue.o; autosize(el); el.focus(); } } return; }
     const seek = e.target.closest('[data-seek]'); if (seek) { seekPlay(+seek.dataset.seek); return; }
-    const open = e.target.closest('[data-open]'); if (open) openDrawer(open.dataset.open);
+    const open = e.target.closest('[data-open]'); if (open) { openDrawer(open.dataset.open); return; }
+    // clicking a highlighted quote opens its card, unless the click was the end of a text selection
+    const hit = e.target.closest('.qs');
+    if (hit && !ui.edit) { const sel = getSelection(); if (sel && !sel.isCollapsed && sel.toString().trim()) return; const ids = (hit.dataset.cards || '').split(' ').filter(id => P.cards[id]); if (ids.length) openDrawer(ids[ids.length - 1]); }
   });
+  // hovering any part of a quote (or its marker) underlines the whole passage that the card holds
+  let hlId = null;
+  const setHl = id => {
+    if (id === hlId) return;
+    $$('#transcript .qs.hl').forEach(el => el.classList.remove('hl'));
+    hlId = id;
+    if (id) $$(`#transcript .qs[data-cards~="${id}"]`).forEach(el => el.classList.add('hl'));
+  };
+  tx.addEventListener('mouseover', e => {
+    const mark = e.target.closest('.mark'); if (mark) { setHl(mark.dataset.open); return; }
+    const cue = e.target.closest('.qs');
+    if (!cue || ui.edit) { setHl(null); return; }
+    const ids = (cue.dataset.cards || '').split(' ').filter(id => P.cards[id]);
+    setHl(ids.length ? ids[ids.length - 1] : null);
+  });
+  tx.addEventListener('mouseleave', () => setHl(null));
   tx.addEventListener('input', e => { if (e.target.classList.contains('ed-text') && ui.edit) { ui.edit.draft[e.target.dataset.ci] = e.target.value; autosize(e.target); } });
   tx.addEventListener('keydown', e => {
     if (!e.target.classList.contains('ed-text')) return;
     if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); cancelEdit(); }
     else if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); commitEdit(); }
   });
+  // keep markers level with their quotes when the column width changes (card panel opening, window resizing)
+  if (window.ResizeObserver) { let w = 0; new ResizeObserver(debounce(en => { const nw = Math.round(en[0].contentRect.width); if (nw && nw !== w) { w = nw; positionMarks(); } }, 60)).observe(tx); }
   const player = $('#player');
   player.addEventListener('timeupdate', onPlayerTime);
   player.addEventListener('seeked', onPlayerTime);
@@ -2699,7 +2769,7 @@ function bindEvents() {
     if (k === 'o' && ui.view === 'transcripts' && media[(currentSession() || {}).id]) { e.preventDefault(); addObservation(); }
   });
 
-  window.addEventListener('resize', debounce(() => { measureTop(); hideSelTool(); }, 120));
+  window.addEventListener('resize', debounce(() => { measureTop(); hideSelTool(); if (ui.view === 'transcripts') positionMarks(); }, 120));
   window.addEventListener('beforeunload', e => { if (save.dirty && !P.example) { e.preventDefault(); e.returnValue = ''; } });
 }
 
@@ -2712,7 +2782,7 @@ function boot() {
   $('#player').playbackRate = ui.rate;
   renderHeader(); renderNotices(); renderView(); renderSaveState();
   measureTop();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { $$('textarea.label-input').forEach(autosize); measureTop(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { $$('textarea.label-input').forEach(autosize); measureTop(); positionMarks(); });
   checkLegacy();
 }
 boot();
