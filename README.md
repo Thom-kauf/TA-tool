@@ -39,12 +39,43 @@ Clicking a card opens its panel. From there you can:
 
 ### Board (affinity diagram)
 
-- **Arrange cards:** drag cards from **Unsorted** into groups (blue labels), and drag groups under themes (pink labels).
-- **Start a group:** drop cards on a **New group** tile.
-- **Move several cards at once:** Shift-click to select several cards, then drag them together.
+The board is an endless whiteboard. Place cards anywhere, cluster them by eye, then draw frames around the clusters.
+
+**Moving around**
+
+- **Pan:** drag empty space, scroll with two fingers on a trackpad, or use the mouse wheel.
+- **Zoom:** Ctrl/⌘ + scroll, pinch on a trackpad or touchscreen, or use the **− / + / Fit** buttons in the corner.
+- **Fit everything in view:** click **Fit**, or press **Shift+1** or **Ctrl/⌘ 0**.
+
+**Cards**
+
+- New quotes and observations wait in the **Unsorted** tray on the left. Drag a card from the tray and drop it anywhere on the board.
+- Drag cards around freely. To set a card aside, drag it back onto the tray.
+- **Select several cards:** Shift-click them, or Shift-drag a box around them. Dragging any selected card moves them all.
+- **Edit a card:** click it to open its panel.
+
+**Groups (blue frames)**
+
+- **Make a group:** select cards and press **G**, or click **Group them** in the selection bar. A frame is drawn around them; type a name for it. **New group** with nothing selected draws an empty frame in the middle of the view.
+- **What counts as in a group:** a card belongs to the group whose frame its center sits in.
+  - Drop a card with the pointer inside a frame and it joins that group, and the frame stretches to fit it.
+  - Drag a card out of a frame and it leaves the group.
+- **Move a group:** drag its blue label or any empty part of the frame. Its cards come with it.
+- **Resize a group:** drag the frame's bottom-right corner. Shrinking it drops cards that end up outside.
+- **The ⋯ menu on a frame:** **Tidy cards** lines the cards up by participant, then time. **Remove group frame** deletes the frame and leaves its cards where they are.
+
+**Themes (pink frames)**
+
+- **Make a theme:** **New theme** draws a large pink frame. Drag group frames into it; a group belongs to the theme its frame's center sits in.
+- **Move a theme:** drag it, and its groups and cards come along.
+
+**Also on the board**
+
 - **Filter:** filter by participant, code or text. Cards that don't match are dimmed.
-- **See who's behind a group:** each group shows which participants it came from.
-- **Undo:** **Ctrl+Z / ⌘Z** undoes moves, code changes, deletes and transcript edits.
+- **See who's behind a group:** each frame shows how many cards it holds and which participants they came from.
+- **Undo:** **Ctrl+Z / ⌘Z** undoes moves, resizes, grouping, code changes, deletes and transcript edits.
+
+**Projects from earlier versions** open with their groups and themes laid out as frames, side by side. Unsorted cards stay in the tray.
 
 ### Report
 
@@ -61,6 +92,8 @@ From there you can:
 - **Download CSV:** one row per card. For FigJam, import the CSV, select the *Sticky note* column, and run *Convert to stickies*.
 - **Copy as table** to paste straight into Google Sheets or Excel
 
+The report follows the board: groups and themes are whatever the frames hold, read from top left to bottom right. Cards outside any frame, and cards in the tray, are listed as *Not yet grouped*.
+
 ## Saving and opening
 
 | Action | How |
@@ -72,7 +105,7 @@ From there you can:
 - **Nothing is saved automatically.** Closing or reloading the page discards unsaved changes. The header shows **Unsaved changes** and the Save button shows a dot until you save.
 - **In Chrome and Edge,** the first save asks where to put the file. After that, Save writes to the same file each time. A project opened with **Open project file…** also saves back to itself.
 - **In Firefox and Safari,** each save downloads a new copy of the project file.
-- **The project file holds:** transcripts, cards, codes, groups, themes, snapshots and transcript edits.
+- **The project file holds:** transcripts, cards, codes, groups, themes, the board layout, snapshots and transcript edits.
 - **It doesn't hold the recordings.** After opening a project, drop the MP4s onto the page again. They're matched to their sessions by file name.
 
 ## Fixing transcript typos
@@ -118,7 +151,10 @@ If a quote card contains the same words, the fix is applied to the card as well.
 | Q | Pull the selected words as a quote |
 | O | Add an observation at this moment |
 | 1–9 | Toggle a code on the open card |
-| Shift-click | Select several cards on the board |
+| Shift-click · Shift-drag | Select several cards on the board |
+| G | Draw a group frame around the selected cards |
+| Ctrl/⌘ + / − | Zoom the board in or out |
+| Shift+1 or Ctrl/⌘ 0 | Fit the whole board in view |
 | Delete | Delete the selected cards |
 | Ctrl/⌘ Z | Undo |
 | Esc | Close the card panel, or cancel a transcript edit |

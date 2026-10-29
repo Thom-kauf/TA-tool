@@ -11,7 +11,7 @@
   --note-y:#FFEF9F; --note-y-edge:#E0CB62; --note-y-ink:#2B2610; --note-y-ink-2:#685D2A; --note-y-chip:#F5DF77;
   --note-b:#CFE3F8; --note-b-edge:#9FC1E6; --note-b-ink:#0E2645;
   --note-p:#F7D3E0; --note-p-edge:#E2A6BD; --note-p-ink:#4A1129;
-  --quoted:#FFE680; --hit:#FFD9A8; --hit-edge:#E9A94F;
+  --canvas:#F2F4F7; --canvas-dot:#CFD5DD; --frame-b:#E8F1FB; --frame-p:#FBEEF3; --quoted:#FFE680; --hit:#FFD9A8; --hit-edge:#E9A94F;
   --danger:#B42318; --ok:#19804D; --warn-bg:#FDECEA;
   --screen:#12161C; --screen-ink:#C9D1DC;
   --toast-bg:#1B2230; --toast-ink:#F2F4F7; --toast-act:#FFE680;
@@ -33,7 +33,7 @@
     --note-y:#3B361A; --note-y-edge:#5A5226; --note-y-ink:#F4EAB8; --note-y-ink-2:#C9BD84; --note-y-chip:#4D4623;
     --note-b:#1B3150; --note-b-edge:#2D4C75; --note-b-ink:#D3E6FB;
     --note-p:#43202F; --note-p-edge:#6A3249; --note-p-ink:#F9D7E4;
-    --quoted:#4D4419; --hit:#5A3E16; --hit-edge:#9A6B25;
+    --canvas:#15181D; --canvas-dot:#2B313A; --frame-b:#17212E; --frame-p:#271B22; --quoted:#4D4419; --hit:#5A3E16; --hit-edge:#9A6B25;
     --danger:#FF8B7E; --ok:#5FD39A; --warn-bg:#3A1F1C;
     --screen:#0B0E12; --screen-ink:#A6AFBC;
     --toast-bg:#E7EAEF; --toast-ink:#12151A; --toast-act:#2446C4;
@@ -52,7 +52,7 @@
   --note-y:#3B361A; --note-y-edge:#5A5226; --note-y-ink:#F4EAB8; --note-y-ink-2:#C9BD84; --note-y-chip:#4D4623;
   --note-b:#1B3150; --note-b-edge:#2D4C75; --note-b-ink:#D3E6FB;
   --note-p:#43202F; --note-p-edge:#6A3249; --note-p-ink:#F9D7E4;
-  --quoted:#4D4419; --hit:#5A3E16; --hit-edge:#9A6B25;
+  --canvas:#15181D; --canvas-dot:#2B313A; --frame-b:#17212E; --frame-p:#271B22; --quoted:#4D4419; --hit:#5A3E16; --hit-edge:#9A6B25;
   --danger:#FF8B7E; --ok:#5FD39A; --warn-bg:#3A1F1C;
   --screen:#0B0E12; --screen-ink:#A6AFBC;
   --toast-bg:#E7EAEF; --toast-ink:#12151A; --toast-act:#2446C4;
@@ -236,34 +236,39 @@ mark.hit.cur{background:var(--accent);color:var(--accent-ink);box-shadow:none}
 .unsorted-scroll{flex:1;padding:4px 12px 20px}
 .cards{display:flex;flex-direction:column;gap:10px;min-height:44px}
 .cards-empty{font-size:12.5px;color:var(--ink-3);padding:10px 2px;line-height:1.5}
-.wall{padding:4px 6px 60px 4px}
-.theme{margin-bottom:30px}
-.theme.loose:only-child{margin-bottom:0}
-.theme-head{display:flex;align-items:flex-start;gap:8px 12px;margin-bottom:14px;flex-wrap:wrap}
-.theme-label{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:6px;background:var(--note-p);border:1px solid var(--note-p-edge);color:var(--note-p-ink);padding:9px 8px 9px 14px;box-shadow:var(--note-shadow);flex:0 1 620px;min-width:min(260px,100%)}
-.theme-meta{font-size:12px;color:var(--ink-2);padding-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.loose-head .eyebrow{padding-top:2px}
 textarea.label-input{display:block;width:100%;border:0;background:transparent;padding:0;border-radius:2px;resize:none;overflow:hidden;color:inherit;min-height:1.3em}
 textarea.label-input:focus{outline:2px solid var(--accent);outline-offset:3px}
 textarea.label-input::placeholder{color:inherit;opacity:.55}
 .theme-title{font-stretch:80%;font-weight:700;font-size:19px;line-height:1.25}
-.groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px 16px;align-items:start}
-.group{display:flex;flex-direction:column;gap:8px;padding:6px;margin:-6px;border-radius:9px;border:1.5px dashed transparent;min-width:0}
-.group.drop-hover{border-color:var(--accent);background:var(--accent-tint)}
-.group.lifted{opacity:.35}
-.glabel{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:4px 6px;background:var(--note-b);border:1px solid var(--note-b-edge);color:var(--note-b-ink);padding:8px 6px 9px 4px;box-shadow:var(--note-shadow)}
 .gtitle{font-stretch:88%;font-weight:600;font-size:15px;line-height:1.3}
-.grip{width:14px;height:22px;border:0;padding:0;margin-top:-1px;background-color:transparent;background-image:radial-gradient(circle,currentColor 1.2px,transparent 1.6px);background-size:6px 6px;background-position:1px 2px;opacity:.45;cursor:grab;touch-action:none}
-.grip:hover{opacity:.9}
 .icon-btn{border:0;background:transparent;color:inherit;border-radius:5px;padding:0 6px;font-size:16px;line-height:22px;letter-spacing:1px;opacity:.7}
 .icon-btn:hover{opacity:1;background:rgba(127,127,127,.18)}
-.gmeta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);padding:0 2px}
-.gmeta .match{color:var(--accent);font-weight:600}
 .pid{font-family:var(--font-mono);font-size:11px;padding:1px 5px;border-radius:3px;background:var(--chip);color:var(--ink-2)}
-.collapsed-note{font-size:12px;color:var(--ink-3);padding:2px}
-.newgroup{border:1.5px dashed var(--line);border-radius:8px;min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--ink-3);font-size:12.5px;padding:12px;text-align:center}
-.newgroup.drop-hover{border-color:var(--accent);background:var(--accent-tint);color:var(--accent)}
-.wall-empty{grid-column:1/-1;font-size:13px;color:var(--ink-2);padding:4px 2px 0;max-width:60ch;line-height:1.55}
+.canvas{position:relative;overflow:hidden;min-height:0;border:1px solid var(--line);border-radius:10px;background-color:var(--canvas);background-image:radial-gradient(circle,var(--canvas-dot) 1px,transparent 1.3px);background-size:24px 24px;touch-action:none;cursor:default;-webkit-user-select:none;user-select:none}
+.canvas.panning{cursor:grabbing}
+.world{position:absolute;left:0;top:0;width:0;height:0;transform-origin:0 0}
+.frame{position:absolute;border-radius:6px}
+.group-frame{background:var(--frame-b);border:1.5px solid var(--note-b-edge)}
+.theme-frame{background:var(--frame-p);border:1.5px solid var(--note-p-edge)}
+.frame.drop-hover{outline:2.5px solid var(--accent);outline-offset:2px}
+.flabel{position:absolute;left:0;right:0;top:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 6px;align-items:start;padding:8px 6px 7px 12px;cursor:grab;border-radius:5px 5px 0 0}
+.group-frame>.flabel{background:var(--note-b);color:var(--note-b-ink);border-bottom:1px solid var(--note-b-edge)}
+.theme-frame>.flabel{background:var(--note-p);color:var(--note-p-ink);border-bottom:1px solid var(--note-p-edge);padding:10px 8px 8px 14px}
+.flabel textarea.label-input{cursor:text}
+.fmeta{grid-column:1/-1;display:flex;gap:5px;flex-wrap:wrap;align-items:center;font-size:11.5px;opacity:.85}
+.fmeta .match{color:var(--accent);font-weight:600}
+.fresize{position:absolute;z-index:4;right:0;bottom:0;width:18px;height:18px;cursor:nwse-resize;background:linear-gradient(135deg,transparent 55%,var(--line) 55%);border-radius:0 0 5px 0}
+.card.on-board{position:absolute;width:240px;margin:0}
+.card.on-board.dragging{z-index:5;box-shadow:var(--ghost-shadow)}
+.card.on-board.sel{z-index:3}
+.marquee{position:absolute;left:0;top:0;border:1.5px solid var(--accent);background:var(--accent-tint);opacity:.55;pointer-events:none}
+.zoombar{position:absolute;right:10px;bottom:10px;display:flex;align-items:center;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px;box-shadow:var(--pop-shadow)}
+.zoombar button{border:0;background:none;min-width:30px;height:28px;border-radius:5px;font-weight:600;color:var(--ink)}
+.zoombar button:hover{background:var(--line-2)}
+.zoombar .pct{min-width:48px;text-align:center;font-size:12px;color:var(--ink-2)}
+.canvas-hint{position:absolute;left:10px;bottom:10px;margin:0;font-size:12px;color:var(--ink-3);background:var(--panel);border:1px solid var(--line-2);padding:4px 9px;border-radius:6px;pointer-events:none;max-width:calc(100% - 200px)}
+.board-empty{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);margin:0;max-width:44ch;text-align:center;color:var(--ink-2);font-size:14px;line-height:1.55;pointer-events:none}
+.unsorted.drop-hover{border-color:var(--accent);background:var(--accent-tint)}
 
 /* sticky notes */
 .card{position:relative;display:flex;flex-direction:column;gap:6px;background:var(--note-y);border:1px solid var(--note-y-edge);color:var(--note-y-ink);padding:9px 11px 11px;border-radius:2px;box-shadow:var(--note-shadow);cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;transition:box-shadow .15s}
@@ -420,7 +425,10 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
   .gutter{grid-column:1/-1;flex-direction:row;align-items:baseline;gap:10px;padding-top:0}
   .board-layout{grid-template-columns:minmax(0,1fr)}
   .unsorted-scroll{padding-bottom:14px}
-  .groups{grid-template-columns:minmax(0,1fr)}
+  .unsorted{max-height:34vh}
+  .unsorted-scroll{overflow:auto;overscroll-behavior:contain}
+  .canvas{height:64vh}
+  .canvas-hint{display:none}
   .drawer{top:0;width:100%;z-index:60;padding-top:env(safe-area-inset-top,0px)}
   .imp-row{grid-template-columns:minmax(0,1fr)}
   .r-card.has-snap{grid-template-columns:minmax(0,1fr)}
@@ -501,7 +509,13 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
           <div class="col-head"><h2 class="eyebrow">Unsorted<span class="mono" id="unsorted-count"></span></h2><button type="button" class="btn sm ghost" data-action="sort-unsorted">Sort by participant</button></div>
           <div class="unsorted-scroll scroll"><div class="cards" id="unsorted-cards"></div></div>
         </div>
-        <div class="wall scroll" id="wall"></div>
+        <div class="canvas" id="canvas" aria-label="Affinity board">
+          <div class="world" id="world"></div>
+          <div class="marquee" id="marquee" hidden></div>
+          <p class="board-empty" id="board-empty" hidden>Drag cards from Unsorted onto the board, then draw groups around them. Select several and press <kbd>G</kbd> to frame them as a group.</p>
+          <p class="canvas-hint">Drag empty space to move around · Shift-drag to select · Ctrl/⌘ + scroll or pinch to zoom</p>
+          <div class="zoombar" role="group" aria-label="Zoom"><button type="button" data-zoom="out" aria-label="Zoom out">−</button><span class="pct mono" id="zoom-pct">100%</span><button type="button" data-zoom="in" aria-label="Zoom in">+</button><button type="button" data-zoom="fit" title="Fit everything (Shift+1)">Fit</button></div>
+        </div>
       </div>
     </section>
 
@@ -753,7 +767,7 @@ let P = null;
 const ui = {
   view: 'transcripts', sessionId: null, search: '', hitIdx: -1, hitCount: 0, nowCue: -1, follow: true, rate: 1, userScrollAt: 0,
   filterPeople: new Set(), filterCode: '', boardSearch: '', thumbs: true, selection: new Set(),
-  drawerId: null, recentCodes: [], dismissRelink: false, focusGroup: null, focusTheme: null, relinkTarget: null,
+  drawerId: null, recentCodes: [], cam: { x: 40, y: 40, z: 1 }, camFor: null, cardH: new Map(), labelH: new Map(), dismissRelink: false, focusGroup: null, focusTheme: null, relinkTarget: null,
 };
 const media = {};
 const turnCache = new Map();
@@ -780,6 +794,9 @@ function normalize(input) {
     const out = ok ? id : uid(kind); remap.set(key, out); return out;
   };
   const list = v => (Array.isArray(v) ? v : []);
+  const coord = v => { const n = num(v, NaN); return Number.isFinite(n) ? clamp(n, -1e6, 1e6) : null; };
+  const pos = o => { const x = coord(o.x), y = coord(o.y); return x != null && y != null ? { x, y } : { x: null, y: null }; };
+  const geo = o => { const g = pos(o), w = coord(o.w), h = coord(o.h); return g.x != null && w > 0 && h > 0 ? { x: g.x, y: g.y, w: Math.max(80, w), h: Math.max(60, h) } : {}; };
   const obj = v => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
   const p = newProject(str(src.name, 200).trim() || 'Untitled study');
   if (typeof src.id === 'string' && SAFE_ID.test(src.id)) p.id = src.id;
@@ -809,7 +826,7 @@ function normalize(input) {
   for (const t of list(src.themes)) {
     if (!t || typeof t !== 'object') continue;
     const id = fixId(t.id, 't'); if (themeIds.has(id)) continue;
-    themeIds.add(id); p.themes.push({ id, title: str(t.title, 300) });
+    themeIds.add(id); p.themes.push({ id, title: str(t.title, 300), ...geo(t) });
   }
   const cardsIn = obj(src.cards);
   for (const rawId of Object.keys(cardsIn)) {
@@ -828,7 +845,7 @@ function normalize(input) {
     p.cards[id] = {
       id, kind: c.kind === 'obs' ? 'obs' : 'quote', sessionId: s.id, speaker: c.speaker == null || c.speaker === '__proto__' ? null : str(c.speaker, 120),
       text: str(c.text, 20000), note: str(c.note, 20000), tags: [...new Set(list(c.tags).map(t => fixId(t, 'k')).filter(t => codeIds.has(t)))],
-      start, end: Math.max(start, num(c.end, start)), ci0, ci1, o0, o1, snapshot: snap, snapshotTime: snap ? Math.max(0, num(c.snapshotTime, start)) : null, createdAt: num(c.createdAt, Date.now()),
+      start, end: Math.max(start, num(c.end, start)), ci0, ci1, o0, o1, ...pos(c), snapshot: snap, snapshotTime: snap ? Math.max(0, num(c.snapshotTime, start)) : null, createdAt: num(c.createdAt, Date.now()),
     };
   }
   const placed = new Set();
@@ -839,11 +856,12 @@ function normalize(input) {
     const g = groupsIn[rawId]; if (!g || typeof g !== 'object') continue;
     const id = fixId(rawId, 'g'); if (p.groups[id]) continue;
     const tid = g.themeId == null ? null : fixId(g.themeId, 't');
-    p.groups[id] = { id, title: str(g.title, 300), themeId: tid && themeIds.has(tid) ? tid : null, cardIds: take(g.cardIds), collapsed: g.collapsed === true };
+    p.groups[id] = { id, title: str(g.title, 300), themeId: tid && themeIds.has(tid) ? tid : null, cardIds: take(g.cardIds), ...geo(g) };
     p.groupOrder.push(id);
   }
   p.unsorted = take(src.unsorted);
   for (const id of Object.keys(p.cards)) if (!placed.has(id)) { p.unsorted.push(id); placed.add(id); }
+  ensureLayout(p);
   return p;
 }
 
@@ -912,6 +930,7 @@ function pushUndo(label, extra) {
   undoStack.push({ label, extra: extra || null, s: {
     cards: Object.assign({}, P.cards),
     tags: Object.fromEntries(Object.values(P.cards).map(c => [c.id, c.tags.slice()])),
+    pos: Object.fromEntries(Object.values(P.cards).map(c => [c.id, [c.x == null ? null : c.x, c.y == null ? null : c.y]])),
     unsorted: P.unsorted.slice(),
     groups: Object.fromEntries(Object.entries(P.groups).map(([k, g]) => [k, Object.assign({}, g, { cardIds: g.cardIds.slice() })])),
     groupOrder: P.groupOrder.slice(), themes: P.themes.map(t => Object.assign({}, t)), codes: P.codes.map(k => Object.assign({}, k)),
@@ -924,6 +943,7 @@ function undo() {
   const s = e.s;
   Object.assign(P, { cards: s.cards, unsorted: s.unsorted, groups: s.groups, groupOrder: s.groupOrder, themes: s.themes, codes: s.codes });
   for (const [id, tags] of Object.entries(s.tags)) if (P.cards[id]) P.cards[id].tags = tags;
+  for (const [id, xy] of Object.entries(s.pos || {})) if (P.cards[id]) { P.cards[id].x = xy[0]; P.cards[id].y = xy[1]; }
   if (e.extra) {
     const ss = sessionById(e.extra.sid);
     if (ss) e.extra.cues.forEach(r => { const cue = ss.cues[r.i]; if (!cue) return; cue.t = r.t; if (r.o == null) delete cue.o; else cue.o = r.o; });
@@ -941,7 +961,7 @@ const save = { dirty: false, at: 0, ver: 0, handle: null, name: '', busy: false 
 /* Original transcript files picked or dropped in this sitting (Chrome and Edge only), by session. Never stored. */
 const transcriptFiles = new Map();
 const MOD = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || '') ? '⌘' : 'Ctrl+';
-function changed() { P.updatedAt = Date.now(); save.ver++; if (!save.dirty) { save.dirty = true; renderSaveState(); } }
+function changed() { if (typeof freshLayouts !== 'undefined') freshLayouts.delete(P); P.updatedAt = Date.now(); save.ver++; if (!save.dirty) { save.dirty = true; renderSaveState(); } }
 function resetSaveState(name, handle) { ui.edit = null; transcriptFiles.clear(); save.dirty = false; save.at = 0; save.handle = handle || null; save.name = name || ''; renderSaveState(); }
 function markSaved(name, ver) { save.dirty = save.ver !== ver; save.at = Date.now(); if (name) save.name = name; renderSaveState(); }
 function renderSaveState() {
@@ -1301,6 +1321,7 @@ function buildExample() {
     p.cards[c.id] = c;
     if (gk) G[gk].cardIds.push(c.id); else p.unsorted.push(c.id);
   }
+  ensureLayout(p);
   P = prevP;
   return p;
 }
@@ -1843,7 +1864,7 @@ function renderDrawerCodes() {
 }
 function renderDrawerGroup() {
   const c = P.cards[ui.drawerId]; if (!c) return; const g = groupOfCard(c.id);
-  $('#d-group').innerHTML = `<option value="">Unsorted</option>${P.groupOrder.map(id => `<option value="${id}">${esc(trunc(P.groups[id].title || 'Untitled group', 60))}</option>`).join('')}<option value="__new">New group</option>`;
+  $('#d-group').innerHTML = `<option value="">Unsorted tray</option>${P.groupOrder.map(id => `<option value="${id}">${esc(trunc(P.groups[id].title || 'Untitled group', 60))}</option>`).join('')}<option value="__new">New group</option>`;
   $('#d-group').value = g ? g.id : '';
 }
 function seekWhenReady(v, t) {
@@ -1864,7 +1885,140 @@ function addCodeFromInput() {
 }
 function autosize(el) { if (!el) return; el.style.height = 'auto'; el.style.height = Math.max(el.scrollHeight + 2, 28) + 'px'; }
 
-/* ---------- board ---------- */
+/* ---------- board: an endless whiteboard ---------- */
+/* Cards sit anywhere on the board (x, y in board units) or wait in the Unsorted tray (no position).
+   Group frames (blue) and theme frames (pink) are rectangles on the board. Which group a card belongs to,
+   and which theme a group belongs to, comes from where its centre sits, so the report always matches the wall. */
+const CW = 240, GAP = 14, PAD = 16, GL = 68, TL = 66;
+let drag = null, bp = null, pinch = null, suppressClick = false;
+const pointers = new Map();
+const freshLayouts = new WeakSet();
+/* After a fresh layout, restack each column of cards with their real heights so none overlap. */
+function restack() {
+  for (const g of Object.values(P.groups)) {
+    const cols = new Map(); g.cardIds.map(id => P.cards[id]).filter(onBoard).forEach(c => { const k = Math.round(c.x); if (!cols.has(k)) cols.set(k, []); cols.get(k).push(c); });
+    for (const col of cols.values()) { col.sort((a, b) => a.y - b.y); for (let i = 1; i < col.length; i++) col[i].y = Math.max(col[i].y, col[i - 1].y + hOf(col[i - 1]) + GAP); }
+  }
+}
+const onBoard = c => !!c && c.x != null && c.y != null;
+function estH(c) {
+  let h = 20 + 18 + 6;
+  h += Math.min(10, Math.max(1, Math.ceil((c.text || '').length / 30))) * 22;
+  if (ui.thumbs && c.snapshot) h += 129;
+  if (c.note) h += Math.min(3, Math.ceil(c.note.length / 36)) * 17.5 + 6;
+  if (c.tags.length) h += Math.ceil(c.tags.length / 2) * 22 + 6;
+  return Math.round(h);
+}
+const hOf = c => ui.cardH.get(c.id) || estH(c);
+const cardRect = c => ({ x: c.x, y: c.y, w: CW, h: hOf(c) });
+const centerOf = r => [r.x + r.w / 2, r.y + r.h / 2];
+const hasFrame = f => !!f && Number.isFinite(f.x) && Number.isFinite(f.y) && f.w > 0 && f.h > 0;
+const inRect = (pt, f) => hasFrame(f) && pt[0] >= f.x && pt[0] <= f.x + f.w && pt[1] >= f.y && pt[1] <= f.y + f.h;
+const smallest = fs => fs.reduce((a, f) => (!a || f.w * f.h < a.w * a.h ? f : a), null);
+const reading = (a, b) => (a.y - b.y) || (a.x - b.x);
+function bbox(rs) {
+  if (!rs.length) return null;
+  const x0 = Math.min(...rs.map(r => r.x)), y0 = Math.min(...rs.map(r => r.y));
+  const x1 = Math.max(...rs.map(r => r.x + r.w)), y1 = Math.max(...rs.map(r => r.y + r.h));
+  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+}
+function layoutGroupCards(p, g, x, y) {
+  const ids = g.cardIds.filter(id => p.cards[id]); const cols = ids.length > 6 ? 2 : 1;
+  const colY = Array(cols).fill(y + GL);
+  for (const id of ids) { const c = p.cards[id]; const k = colY.indexOf(Math.min(...colY)); c.x = x + PAD + k * (CW + GAP); c.y = colY[k]; colY[k] += hOf(c) + GAP; }
+  Object.assign(g, { x, y, w: PAD * 2 + cols * CW + (cols - 1) * GAP, h: Math.max(180, Math.max(...colY) - GAP + PAD - y) });
+}
+function placeIn(p, c, g) {
+  const ms = g.cardIds.map(id => p.cards[id]).filter(m => m && m !== c && onBoard(m));
+  c.x = ms.length ? Math.min(...ms.map(m => m.x)) : g.x + PAD;
+  c.y = ms.length ? Math.max(...ms.map(m => m.y + hOf(m))) + GAP : g.y + GL;
+  g.h = Math.max(g.h, c.y + hOf(c) + PAD - g.y); g.w = Math.max(g.w, c.x + CW + PAD - g.x);
+}
+/* Projects made before the whiteboard (or the example) have groups but no positions: lay them out as frames. */
+function ensureLayout(p) {
+  const groups = p.groupOrder.map(id => p.groups[id]);
+  if (groups.some(g => !hasFrame(g)) || p.themes.some(t => !hasFrame(t))) {
+    const row = (gs, x0, y0) => { let x = x0, h = 0; for (const g of gs) { layoutGroupCards(p, g, x, y0); x += g.w + 40; h = Math.max(h, g.h); } return { w: Math.max(0, x - x0 - 40), h }; };
+    let x = 0;
+    for (const t of p.themes) {
+      const r = row(groups.filter(g => g.themeId === t.id), x + PAD, TL);
+      Object.assign(t, { x, y: 0, w: Math.max(480, r.w + PAD * 2), h: Math.max(260, r.h + TL + PAD) }); x += t.w + 80;
+    }
+    row(groups.filter(g => !g.themeId), x, TL);
+    freshLayouts.add(p);
+  } else {
+    for (const g of groups) for (const id of g.cardIds) { const c = p.cards[id]; if (c && !onBoard(c)) placeIn(p, c, g); }
+  }
+}
+function recomputeMembership() {
+  const groups = P.groupOrder.map(id => P.groups[id]).filter(hasFrame);
+  for (const g of groups) { const t = smallest(P.themes.filter(t => inRect(centerOf(g), t))); g.themeId = t ? t.id : null; }
+  const members = new Map(groups.map(g => [g.id, []]));
+  const seen = new Set(); const tray = []; const loose = [];
+  for (const id of P.unsorted) { const c = P.cards[id]; if (c && !onBoard(c)) { tray.push(id); seen.add(id); } }
+  for (const c of Object.values(P.cards)) {
+    if (!onBoard(c)) { if (!seen.has(c.id)) tray.push(c.id); continue; }
+    const g = smallest(groups.filter(f => inRect(centerOf(cardRect(c)), f)));
+    if (g) members.get(g.id).push(c); else loose.push(c);
+  }
+  for (const g of groups) g.cardIds = members.get(g.id).sort(reading).map(c => c.id);
+  P.unsorted = [...tray, ...loose.sort(reading).map(c => c.id)];
+  P.themes.sort(reading);
+  P.groupOrder = Object.values(P.groups).sort(reading).map(g => g.id);
+}
+/* Frames stretch to hold everything dropped into them; they never shrink on their own. */
+function autoGrow() {
+  for (const g of Object.values(P.groups)) {
+    const rs = g.cardIds.map(id => P.cards[id]).filter(onBoard).map(cardRect); if (!rs.length) continue;
+    let x0 = g.x, y0 = g.y, x1 = g.x + g.w, y1 = g.y + g.h;
+    const top = Math.max(GL, (ui.labelH.get(g.id) || 0) + 10);
+    for (const r of rs) { x0 = Math.min(x0, r.x - PAD); y0 = Math.min(y0, r.y - top); x1 = Math.max(x1, r.x + r.w + PAD); y1 = Math.max(y1, r.y + r.h + PAD); }
+    Object.assign(g, { x: x0, y: y0, w: x1 - x0, h: y1 - y0 });
+  }
+  for (const t of P.themes) {
+    const rs = Object.values(P.groups).filter(g => g.themeId === t.id); if (!rs.length) continue;
+    let x0 = t.x, y0 = t.y, x1 = t.x + t.w, y1 = t.y + t.h;
+    const top = Math.max(TL, (ui.labelH.get(t.id) || 0) + 12);
+    for (const r of rs) { x0 = Math.min(x0, r.x - PAD); y0 = Math.min(y0, r.y - top); x1 = Math.max(x1, r.x + r.w + PAD); y1 = Math.max(y1, r.y + r.h + PAD); }
+    Object.assign(t, { x: x0, y: y0, w: x1 - x0, h: y1 - y0 });
+  }
+}
+function commitBoard() {
+  recomputeMembership(); autoGrow(); recomputeMembership();
+  changed(); if (ui.view === 'board') renderBoard(); renderHeader();
+  if (ui.drawerId) renderDrawerGroup();
+}
+
+/* camera */
+const canvasEl = () => $('#canvas');
+function applyCam() {
+  const w = $('#world'); if (w) w.style.transform = `translate(${ui.cam.x}px, ${ui.cam.y}px) scale(${ui.cam.z})`;
+  const pct = $('#zoom-pct'); if (pct) pct.textContent = Math.round(ui.cam.z * 100) + '%';
+  const cv = canvasEl(); if (cv) { const s = 24 * ui.cam.z; cv.style.backgroundSize = `${s}px ${s}px`; cv.style.backgroundPosition = `${ui.cam.x}px ${ui.cam.y}px`; }
+}
+function toWorld(cx, cy) { const r = canvasEl().getBoundingClientRect(); return [(cx - r.left - ui.cam.x) / ui.cam.z, (cy - r.top - ui.cam.y) / ui.cam.z]; }
+function zoomAt(sx, sy, f) {
+  const z = clamp(ui.cam.z * f, 0.12, 2.5); const wx = (sx - ui.cam.x) / ui.cam.z, wy = (sy - ui.cam.y) / ui.cam.z;
+  ui.cam = { x: sx - wx * z, y: sy - wy * z, z }; ui.camMoved = true; applyCam();
+}
+function zoomBy(f) { const r = canvasEl().getBoundingClientRect(); zoomAt(r.width / 2, r.height / 2, f); }
+function contentBox() {
+  return bbox([...P.themes.filter(hasFrame), ...Object.values(P.groups).filter(hasFrame), ...Object.values(P.cards).filter(onBoard).map(cardRect)]);
+}
+function fitView() {
+  const cv = canvasEl(); if (!cv) return false; const r = cv.getBoundingClientRect(); if (!r.width || !r.height) return false;
+  const b = contentBox();
+  if (!b) { ui.cam = { x: 40, y: 40, z: 1 }; applyCam(); return true; }
+  const z = clamp(Math.min((r.width - 60) / b.w, (r.height - 60) / b.h), 0.12, 1.1);
+  ui.cam = { x: (r.width - b.w * z) / 2 - b.x * z, y: (r.height - b.h * z) / 2 - b.y * z, z }; applyCam(); return true;
+}
+function viewCenter() {
+  const cv = canvasEl(); const r = cv && cv.getBoundingClientRect();
+  if (r && r.width && ui.view === 'board') return toWorld(r.left + r.width / 2, r.top + r.height / 2);
+  const b = contentBox(); return b ? [b.x + b.w + 200, b.y + 150] : [200, 150];
+}
+
+/* filters, cards, frames */
 function filtersActive() { return !!(ui.boardSearch.trim() || ui.filterPeople.size || ui.filterCode); }
 function cardMatches(c) {
   if (ui.filterPeople.size && !ui.filterPeople.has(c.sessionId)) return false;
@@ -1872,33 +2026,23 @@ function cardMatches(c) {
   const q = ui.boardSearch.trim().toLowerCase(); if (q && !`${c.text} ${c.note}`.toLowerCase().includes(q)) return false;
   return true;
 }
-function cardHTML(c) {
+function cardHTML(c, placed) {
   const s = sessionById(c.sessionId); const res = isResearcher(s, c.speaker);
-  const cls = ['card', c.kind, filtersActive() && !cardMatches(c) ? 'dim' : '', ui.selection.has(c.id) ? 'sel' : '', ui.drawerId === c.id ? 'open' : ''].filter(Boolean).join(' ');
+  const cls = ['card', c.kind, placed ? 'on-board' : '', filtersActive() && !cardMatches(c) ? 'dim' : '', ui.selection.has(c.id) ? 'sel' : '', ui.drawerId === c.id ? 'open' : ''].filter(Boolean).join(' ');
   const label = `${c.kind === 'quote' ? 'Quote' : 'Observation'} from ${s ? s.label : ''} at ${tc(c.start)}`;
-  return `<div class="${cls}" data-card="${c.id}" tabindex="0" role="button" aria-label="${esc(label)}">${ui.thumbs && c.snapshot ? `<img class="thumb" src="${snapSrc(c)}" alt="" draggable="false">` : ''}<div class="cmeta"><span class="pid">${esc(s ? s.label : '?')}</span>${res ? '<span>Researcher</span>' : ''}<span>${tc(c.start)}</span>${c.kind === 'obs' ? '<span class="kind">Observed</span>' : ''}</div><p class="ctext">${c.text ? esc(c.text) : '<span class="empty">No text yet</span>'}</p>${c.note ? `<p class="cnote">${esc(c.note)}</p>` : ''}${c.tags.length ? `<div class="ctags">${c.tags.map(t => { const k = codeById(t); return k ? `<span class="ktag"><i class="dot" style="--k:var(--k${k.color})"></i>${esc(k.name)}</span>` : ''; }).join('')}</div>` : ''}</div>`;
+  const pos = placed ? ` style="left:${Math.round(c.x)}px;top:${Math.round(c.y)}px"` : '';
+  return `<div class="${cls}" data-card="${c.id}"${pos} tabindex="0" role="button" aria-label="${esc(label)}">${ui.thumbs && c.snapshot ? `<img class="thumb" src="${snapSrc(c)}" alt="" draggable="false">` : ''}<div class="cmeta"><span class="pid">${esc(s ? s.label : '?')}</span>${res ? '<span>Researcher</span>' : ''}<span>${tc(c.start)}</span>${c.kind === 'obs' ? '<span class="kind">Observed</span>' : ''}</div><p class="ctext">${c.text ? esc(c.text) : '<span class="empty">No text yet</span>'}</p>${c.note ? `<p class="cnote">${esc(c.note)}</p>` : ''}${c.tags.length ? `<div class="ctags">${c.tags.map(t => { const k = codeById(t); return k ? `<span class="ktag"><i class="dot" style="--k:var(--k${k.color})"></i>${esc(k.name)}</span>` : ''; }).join('')}</div>` : ''}</div>`;
 }
 function peopleIn(ids) { return [...new Set(ids.map(id => { const c = P.cards[id]; const s = c && sessionById(c.sessionId); return s ? s.label : null; }).filter(Boolean))].sort(natCmp); }
-function groupHTML(g) {
+const box = f => `left:${Math.round(f.x)}px;top:${Math.round(f.y)}px;width:${Math.round(f.w)}px;height:${Math.round(f.h)}px`;
+function groupFrameHTML(g) {
   const n = g.cardIds.length; const ppl = peopleIn(g.cardIds);
   const matches = filtersActive() ? g.cardIds.filter(id => cardMatches(P.cards[id])).length : null;
-  return `<div class="group${g.collapsed ? ' collapsed' : ''}" data-group="${g.id}" data-drop="g:${g.id}">
-    <div class="glabel"><button type="button" class="grip" aria-label="Drag to move this group" title="Drag to move this group"></button><textarea class="label-input gtitle" id="gt-${g.id}" data-gtitle="${g.id}" rows="1" placeholder="Name this group" aria-label="Group name">${esc(g.title)}</textarea><button type="button" class="icon-btn" data-action="group-menu" data-id="${g.id}" aria-label="Group options">⋯</button></div>
-    <div class="gmeta"><span>${plural(n, 'card')}</span>${ppl.map(p => `<span class="pid">${esc(p)}</span>`).join('')}${matches != null ? `<span class="match">${matches} match</span>` : ''}</div>
-    <div class="cards">${g.collapsed ? `<p class="collapsed-note">Collapsed. Drop cards here to add them.</p>` : g.cardIds.map(id => cardHTML(P.cards[id])).join('')}</div>
-  </div>`;
+  return `<div class="frame group-frame" data-gframe="${g.id}" style="${box(g)}"><div class="flabel"><textarea class="label-input gtitle" id="gt-${g.id}" data-gtitle="${g.id}" rows="1" placeholder="Name this group" aria-label="Group name">${esc(g.title)}</textarea><button type="button" class="icon-btn" data-action="group-menu" data-id="${g.id}" aria-label="Group options">⋯</button><div class="fmeta"><span>${plural(n, 'card')}</span>${ppl.map(x => `<span class="pid">${esc(x)}</span>`).join('')}${matches != null ? `<span class="match">${matches} match</span>` : ''}</div></div><div class="fresize" data-resize="g:${g.id}" title="Drag to resize"></div></div>`;
 }
-function newGroupTile(themeId) { return `<div class="newgroup" data-drop="newgroup${themeId ? ':' + themeId : ''}"><button type="button" class="btn sm" data-action="new-group" data-theme="${themeId || ''}">New group</button><span>or drop cards here</span></div>`; }
-function wallHTML() {
-  let h = '';
-  for (const t of P.themes) {
-    const gs = themeGroups(t.id); const ppl = peopleIn(gs.flatMap(g => g.cardIds));
-    h += `<section class="theme" data-gdrop="${t.id}"><div class="theme-head"><div class="theme-label"><textarea class="label-input theme-title" id="tt-${t.id}" data-ttitle="${t.id}" rows="1" placeholder="Name this theme" aria-label="Theme name">${esc(t.title)}</textarea><button type="button" class="icon-btn" data-action="theme-menu" data-id="${t.id}" aria-label="Theme options">⋯</button></div><span class="theme-meta">${plural(gs.length, 'group')}${ppl.map(p => ` <span class="pid">${esc(p)}</span>`).join('')}</span></div><div class="groups">${gs.map(groupHTML).join('')}${newGroupTile(t.id)}</div></section>`;
-  }
-  const loose = themeGroups(null);
-  const noCards = !Object.keys(P.cards).length;
-  h += `<section class="theme loose" data-gdrop="none">${P.themes.length ? '<div class="theme-head loose-head"><h3 class="eyebrow">Not in a theme</h3></div>' : ''}<div class="groups">${loose.map(groupHTML).join('')}${!P.groupOrder.length ? `<p class="wall-empty">${noCards ? 'Quotes you pull from transcripts land in Unsorted. Drag them here to form groups, name each group with a short statement in the participant\'s voice, then gather related groups under a theme.' : 'Drag cards from Unsorted onto the tile below to start your first group. Shift-click to pick up several at once.'}</p>` : ''}${newGroupTile(null)}</div></section>`;
-  return h;
+function themeFrameHTML(t) {
+  const gs = themeGroups(t.id); const ppl = peopleIn(gs.flatMap(g => g.cardIds));
+  return `<div class="frame theme-frame" data-tframe="${t.id}" style="${box(t)}"><div class="flabel"><textarea class="label-input theme-title" id="tt-${t.id}" data-ttitle="${t.id}" rows="1" placeholder="Name this theme" aria-label="Theme name">${esc(t.title)}</textarea><button type="button" class="icon-btn" data-action="theme-menu" data-id="${t.id}" aria-label="Theme options">⋯</button><div class="fmeta"><span>${plural(gs.length, 'group')}</span>${ppl.map(x => `<span class="pid">${esc(x)}</span>`).join('')}</div></div><div class="fresize" data-resize="t:${t.id}" title="Drag to resize"></div></div>`;
 }
 function renderBoardFilters() {
   $('#filter-people').innerHTML = P.sessions.map(s => `<button type="button" class="pchip" data-person="${s.id}" aria-pressed="${ui.filterPeople.has(s.id)}" title="Show cards from ${esc(s.label)}">${esc(s.label)}</button>`).join('');
@@ -1913,24 +2057,41 @@ function renderBoard() {
   ui.filterPeople.forEach(id => { if (!sessionById(id)) ui.filterPeople.delete(id); });
   ui.selection.forEach(id => { if (!P.cards[id]) ui.selection.delete(id); });
   renderBoardFilters();
-  const wall = $('#wall'), us = $('.unsorted-scroll');
-  const keepW = wall.scrollTop, keepU = us.scrollTop;
-  $('#unsorted-count').textContent = P.unsorted.length;
-  $('#unsorted-cards').innerHTML = P.unsorted.length ? P.unsorted.map(id => cardHTML(P.cards[id])).join('')
-    : `<p class="cards-empty">${Object.keys(P.cards).length ? 'Every card is in a group.' : 'No cards yet. Select words in a transcript to pull a quote, or add an observation while a recording plays.'}</p>`;
-  wall.innerHTML = wallHTML();
-  wall.scrollTop = keepW; us.scrollTop = keepU;
-  $$('#wall textarea.label-input').forEach(autosize);
+  const us = $('.unsorted-scroll'); const keepU = us.scrollTop;
+  const tray = P.unsorted.filter(id => P.cards[id] && !onBoard(P.cards[id]));
+  $('#unsorted-count').textContent = tray.length;
+  $('#unsorted-cards').innerHTML = tray.length ? tray.map(id => cardHTML(P.cards[id], false)).join('')
+    : `<p class="cards-empty">${Object.keys(P.cards).length ? 'Every card is on the board. Drag one back here to set it aside.' : 'No cards yet. Select words in a transcript to pull a quote, or add an observation while a recording plays.'}</p>`;
+  us.scrollTop = keepU;
+  const world = $('#world');
+  world.innerHTML = P.themes.filter(hasFrame).map(themeFrameHTML).join('') + P.groupOrder.map(id => P.groups[id]).filter(hasFrame).map(groupFrameHTML).join('')
+    + Object.values(P.cards).filter(onBoard).sort(reading).map(c => cardHTML(c, true)).join('');
+  $$('#world .card').forEach(el => ui.cardH.set(el.dataset.card, el.offsetHeight));
+  $$('#world textarea.label-input').forEach(autosize);
+  $$('#world .frame').forEach(el => ui.labelH.set(el.dataset.gframe || el.dataset.tframe, el.querySelector('.flabel').offsetHeight));
+  // laid-out frames were sized from estimated card heights; stretch them once to the real sizes
+  if (freshLayouts.has(P)) restack();  // until the first edit, so late-loading fonts can't leave overlaps
+  if (!renderBoard.fitting) {
+    const sig = () => JSON.stringify([...Object.values(P.groups), ...P.themes].map(f => [f.x, f.y, f.w, f.h]));
+    const before = sig(); recomputeMembership(); autoGrow(); recomputeMembership();
+    if (sig() !== before) { renderBoard.fitting = true; try { renderBoard(); } finally { renderBoard.fitting = false; } return; }
+  }
+  $$('#world textarea.label-input').forEach(autosize);
+  $$('#world .frame').forEach(el => ui.labelH.set(el.dataset.gframe || el.dataset.tframe, el.querySelector('.flabel').offsetHeight));
+  $('#board-empty').hidden = !!contentBox();
+  if (ui.camFor !== P.id) { if (fitView()) { ui.camFor = P.id; ui.camMoved = false; } } else applyCam();
   renderSelBar();
-  if (ui.focusGroup) { const el = $('#gt-' + ui.focusGroup); ui.focusGroup = null; if (el) { el.focus({ preventScroll: false }); } }
-  if (ui.focusTheme) { const el = $('#tt-' + ui.focusTheme); ui.focusTheme = null; if (el) { el.focus({ preventScroll: false }); } }
+  const focus = (id, pre) => { const el = $('#' + pre + id); if (el) el.focus({ preventScroll: true }); };
+  if (ui.focusGroup) { focus(ui.focusGroup, 'gt-'); ui.focusGroup = null; }
+  if (ui.focusTheme) { focus(ui.focusTheme, 'tt-'); ui.focusTheme = null; }
 }
 function renderSelBar() {
   const bar = $('#selbar'); const n = ui.selection.size;
   if (!n) { bar.hidden = true; bar.innerHTML = ''; return; }
   bar.hidden = false;
   bar.innerHTML = `<span><b>${n}</b> selected</span>
-    <select id="sel-move" aria-label="Move selected cards"><option value="">Move to…</option><option value="__unsorted">Unsorted</option>${P.groupOrder.map(id => `<option value="${id}">${esc(trunc(P.groups[id].title || 'Untitled group', 50))}</option>`).join('')}<option value="__new">New group</option></select>
+    <button type="button" class="btn sm" id="sel-group" title="Draw a group frame around them (G)">Group them <kbd>G</kbd></button>
+    <select id="sel-move" aria-label="Move selected cards"><option value="">Move to…</option><option value="__unsorted">Unsorted tray</option>${P.groupOrder.map(id => `<option value="${id}">${esc(trunc(P.groups[id].title || 'Untitled group', 50))}</option>`).join('')}<option value="__new">New group</option></select>
     <select id="sel-code" aria-label="Add a code to selected cards"><option value="">Add code…</option>${P.codes.map(k => `<option value="${k.id}">${esc(k.name)}</option>`).join('')}</select>
     <button type="button" class="btn sm" id="sel-delete">Delete</button>
     <button type="button" class="btn sm ghost" id="sel-clear">Clear selection</button>`;
@@ -1940,11 +2101,18 @@ function toggleSel(id) {
   $$(`.card[data-card="${id}"]`).forEach(el => el.classList.toggle('sel', ui.selection.has(id)));
   renderSelBar();
 }
+function clearSel() { if (!ui.selection.size) return; ui.selection.clear(); $$('.card.sel').forEach(el => el.classList.remove('sel')); renderSelBar(); }
+function onCardClick(e, card) {
+  if (suppressClick) { suppressClick = false; return; }
+  const id = card.dataset.card;
+  if (e.shiftKey || e.metaKey || e.ctrlKey) { toggleSel(id); return; }
+  clearSel(); openDrawer(id);
+}
 function deleteCards(ids) {
   if (!ids.length) return;
   pushUndo(ids.length > 1 ? 'Delete cards' : 'Delete card');
   const set = new Set(ids);
-  ids.forEach(id => { delete P.cards[id]; ui.selection.delete(id); });
+  ids.forEach(id => { delete P.cards[id]; ui.selection.delete(id); ui.cardH.delete(id); });
   P.unsorted = P.unsorted.filter(x => !set.has(x));
   Object.values(P.groups).forEach(g => { g.cardIds = g.cardIds.filter(x => !set.has(x)); });
   if (set.has(ui.drawerId)) closeDrawer(true);
@@ -1954,16 +2122,15 @@ function deleteCards(ids) {
 function deleteGroup(gid) {
   const g = P.groups[gid]; if (!g) return;
   pushUndo('Delete group');
-  P.unsorted.push(...g.cardIds); delete P.groups[gid]; P.groupOrder = P.groupOrder.filter(x => x !== gid);
-  changed(); renderBoard(); renderHeader();
-  toast(g.cardIds.length ? `Group deleted. Its ${plural(g.cardIds.length, 'card')} moved to Unsorted.` : 'Group deleted', { action: 'Undo', onAction: undo });
+  delete P.groups[gid]; P.groupOrder = P.groupOrder.filter(x => x !== gid);
+  commitBoard();
+  toast(g.cardIds.length ? 'Group removed. Its cards stay where they are.' : 'Group removed', { action: 'Undo', onAction: undo });
 }
 function deleteTheme(tid) {
   pushUndo('Delete theme');
   P.themes = P.themes.filter(t => t.id !== tid);
-  Object.values(P.groups).forEach(g => { if (g.themeId === tid) g.themeId = null; });
-  changed(); renderBoard();
-  toast('Theme deleted. Its groups are still on the wall.', { action: 'Undo', onAction: undo });
+  commitBoard();
+  toast('Theme removed. Its groups stay where they are.', { action: 'Undo', onAction: undo });
 }
 function sortCardIds(ids) {
   return ids.slice().sort((a, b) => {
@@ -1971,176 +2138,212 @@ function sortCardIds(ids) {
     return natCmp(sa ? sa.label : '', sb ? sb.label : '') || ca.start - cb.start;
   });
 }
+/* Put cards in a group, the tray, or a new group drawn around them. */
+function groupAround(ids) {
+  const cs = ids.map(id => P.cards[id]).filter(Boolean); if (!cs.length) return null;
+  const on = cs.filter(onBoard); let b = bbox(on.map(cardRect));
+  if (!b) { const [cx, cy] = viewCenter(); b = { x: cx - CW / 2, y: cy - 60, w: CW, h: 0 }; }
+  let y = b.y + b.h + (on.length ? GAP : 0);
+  for (const c of cs.filter(c => !onBoard(c))) { c.x = b.x; c.y = y; y += hOf(c) + GAP; }
+  const all = bbox(cs.map(cardRect));
+  const g = addGroup(null, ''); Object.assign(g, { x: all.x - PAD, y: all.y - GL, w: all.w + PAD * 2, h: all.h + GL + PAD });
+  ui.focusGroup = g.id; return g;
+}
+function moveCardsTo(ids, target) {
+  if (!ids.length || !target) return;
+  pushUndo('Move');
+  if (target === '__unsorted') ids.forEach(id => { const c = P.cards[id]; if (c) { c.x = null; c.y = null; } });
+  else if (target === '__new') groupAround(ids);
+  else { const g = P.groups[target]; if (!g) return; ids.forEach(id => { const c = P.cards[id]; if (!c) return; g.cardIds = g.cardIds.filter(x => x !== id); placeIn(P, c, g); g.cardIds.push(id); }); }
+  commitBoard();
+}
+function tidyGroup(g) {
+  pushUndo('Tidy group'); g.cardIds = sortCardIds(g.cardIds);
+  const cols = g.cardIds.length > 6 ? 2 : 1; layoutGroupCards(P, g, g.x, g.y);
+  if (cols === 1) g.w = Math.max(g.w, CW + PAD * 2);
+  commitBoard();
+}
 function openGroupMenu(anchor, gid) {
   const g = P.groups[gid]; if (!g) return;
-  showPop(anchor, `<label class="pop-field" for="pop-theme">Theme<select id="pop-theme"><option value="">No theme</option>${P.themes.map(t => `<option value="${t.id}"${g.themeId === t.id ? ' selected' : ''}>${esc(trunc(t.title || 'Untitled theme', 40))}</option>`).join('')}<option value="__new">New theme…</option></select></label>
-    <button type="button" class="item" data-pop="collapse">${g.collapsed ? 'Expand group' : 'Collapse group'}</button>
-    <button type="button" class="item" data-pop="sort">Sort cards by participant</button>
-    <hr><button type="button" class="item danger" data-pop="delete">Delete group<span class="hint">Cards go to Unsorted</span></button>`, (act, el) => {
-    if (act === 'change') {
-      pushUndo('Change theme');
-      let tid = el.value || null;
-      if (tid === '__new') { const t = addTheme(''); tid = t.id; ui.focusTheme = t.id; }
-      g.themeId = tid; P.groupOrder = P.groupOrder.filter(x => x !== gid);
-      let last = -1; P.groupOrder.forEach((x, i) => { if ((P.groups[x].themeId || null) === (tid || null)) last = i; });
-      P.groupOrder.splice(last < 0 ? P.groupOrder.length : last + 1, 0, gid);
-      hidePop(); changed(); renderBoard();
-    } else if (act === 'collapse') { g.collapsed = !g.collapsed; hidePop(); changed(); renderBoard(); }
-    else if (act === 'sort') { pushUndo('Sort group'); g.cardIds = sortCardIds(g.cardIds); hidePop(); changed(); renderBoard(); }
-    else if (act === 'delete') { hidePop(); deleteGroup(gid); }
+  showPop(anchor, `<button type="button" class="item" data-pop="tidy">Tidy cards<span class="hint">By participant, then time</span></button>
+    <hr><button type="button" class="item danger" data-pop="delete">Remove group frame<span class="hint">Cards stay put</span></button>`, act => {
+    hidePop(); if (act === 'tidy') tidyGroup(g); else if (act === 'delete') deleteGroup(gid);
   });
 }
 function openThemeMenu(anchor, tid) {
-  showPop(anchor, `<button type="button" class="item" data-pop="add">New group in this theme</button><hr><button type="button" class="item danger" data-pop="delete">Delete theme<span class="hint">Keeps its groups</span></button>`, act => {
-    hidePop();
-    if (act === 'add') { const g = addGroup(tid, ''); ui.focusGroup = g.id; changed(); renderBoard(); }
-    else if (act === 'delete') deleteTheme(tid);
-  });
+  showPop(anchor, `<button type="button" class="item danger" data-pop="delete">Remove theme frame<span class="hint">Groups stay put</span></button>`, act => { hidePop(); if (act === 'delete') deleteTheme(tid); });
 }
 
-/* ---------- drag and drop on the board ---------- */
-let press = null, drag = null;
-function blockTouch(e) { if (drag) e.preventDefault(); }
-function beginPress(e, type, el) {
-  press = { type, el, id: type === 'card' ? el.dataset.card : el.dataset.group, x: e.clientX, y: e.clientY, touch: e.pointerType === 'touch' };
-  if (press.touch) press.timer = setTimeout(() => { if (press && !drag) startDrag(); }, 380);
+/* pointer handling: pan, select, drag cards and frames, resize, pinch */
+function frameObj(el) { if (!el) return null; if (el.dataset.gframe) return P.groups[el.dataset.gframe] || null; if (el.dataset.tframe) return P.themes.find(t => t.id === el.dataset.tframe) || null; return null; }
+function onBoardPointerDown(e) {
+  if (e.target.closest('button, input, textarea, select, a, label, .zoombar')) return;
+  const inCanvas = !!e.target.closest('#canvas');
+  if (inCanvas) { pointers.set(e.pointerId, [e.clientX, e.clientY]); if (pointers.size === 2 && e.pointerType === 'touch') { startPinch(); return; } }
+  if (e.button !== 0 && !(e.button === 1 && inCanvas)) return;
+  const card = e.target.closest('.card'); const rs = e.target.closest('[data-resize]'); const fr = e.target.closest('.frame');
+  let kind = card ? 'card' : rs ? 'resize' : inCanvas && e.shiftKey ? 'marquee' : fr ? 'frame' : inCanvas ? 'pan' : null;
+  if (e.button === 1) kind = 'pan';
+  if (!kind) return;
+  bp = { kind, x: e.clientX, y: e.clientY, cx: e.clientX, cy: e.clientY, id: card ? card.dataset.card : null, el: card || fr, frame: rs ? frameObj(rs.closest('.frame')) : frameObj(fr), touch: e.pointerType === 'touch', fromTray: !!(card && card.closest('.unsorted')), started: false, shift: e.shiftKey };
+  if (bp.touch && bp.fromTray) bp.timer = setTimeout(() => { if (bp && !bp.started) beginBoardDrag(); }, 380);
   else e.preventDefault();
-  window.addEventListener('pointermove', onPressMove, { passive: false });
-  window.addEventListener('pointerup', onPressUp);
-  window.addEventListener('pointercancel', onPressCancel);
+  window.addEventListener('pointermove', onBoardMove, { passive: false });
+  window.addEventListener('pointerup', onBoardUp);
+  window.addEventListener('pointercancel', onBoardUp);
 }
-function endPress() {
-  if (press) clearTimeout(press.timer);
-  press = null;
-  window.removeEventListener('pointermove', onPressMove);
-  window.removeEventListener('pointerup', onPressUp);
-  window.removeEventListener('pointercancel', onPressCancel);
-}
-function onPressMove(e) {
-  if (!press) return;
-  if (!drag) {
-    const dist = Math.hypot(e.clientX - press.x, e.clientY - press.y);
-    if (press.touch) { if (dist > 10) endPress(); return; }
-    if (dist < 5) return;
-    startDrag();
-  }
-  e.preventDefault();
-  drag.x = e.clientX; drag.y = e.clientY;
-  moveGhost(); updateTarget();
-}
-let suppressClick = false;
-function onPressUp() {
-  if (!press) return;
-  if (drag) { commitDrop(); endDrag(); suppressClick = true; setTimeout(() => { suppressClick = false; }, press.touch ? 350 : 0); }
-  endPress();
-}
-function onCardClick(e, card) {
-  if (suppressClick) { suppressClick = false; return; }
-  const id = card.dataset.card;
-  if (e.shiftKey || e.metaKey || e.ctrlKey) { toggleSel(id); return; }
-  if (ui.selection.size) { ui.selection.clear(); $$('.card.sel').forEach(el => el.classList.remove('sel')); renderSelBar(); }
-  openDrawer(id);
-}
-function onPressCancel() { if (drag) endDrag(); endPress(); }
-function startDrag() {
-  const p = press; if (!p) return;
-  let ids = [p.id];
-  if (p.type === 'card' && ui.selection.has(p.id)) ids = orderedSelection();
-  const r = p.el.getBoundingClientRect();
-  drag = { type: p.type, ids, offX: Math.min(p.x - r.left, 300), offY: Math.min(p.y - r.top, 60), x: p.x, y: p.y, target: null, raf: 0 };
-  let ghost;
-  if (p.type === 'card') { ghost = p.el.cloneNode(true); ghost.classList.remove('lifted', 'sel', 'dim', 'open'); ghost.style.width = Math.min(r.width, 320) + 'px'; }
-  else { ghost = p.el.querySelector('.glabel').cloneNode(true); ghost.style.width = Math.min(r.width, 320) + 'px'; const ta = ghost.querySelector('textarea'); if (ta) ta.value = P.groups[p.id].title; }
-  ghost.classList.add('drag-ghost'); ghost.removeAttribute('id'); $$('[id]', ghost).forEach(n => n.removeAttribute('id'));
-  if (ids.length > 1) ghost.insertAdjacentHTML('beforeend', `<span class="ghost-count">${ids.length}</span>`);
-  document.body.appendChild(ghost); drag.ghost = ghost;
-  if (p.type === 'card') ids.forEach(id => $$(`.card[data-card="${id}"]`).forEach(el => el.classList.add('lifted')));
-  else p.el.classList.add('lifted');
-  document.body.classList.add('is-dragging');
-  if (p.touch) { document.addEventListener('touchmove', blockTouch, { passive: false }); try { if (navigator.vibrate) navigator.vibrate(8); } catch (e) { /* not allowed */ } }
-  hidePop(); hideSelTool(); moveGhost(); updateTarget(); autoScroll();
-}
-function moveGhost() { if (drag && drag.ghost) drag.ghost.style.transform = `translate(${Math.round(drag.x - drag.offX)}px, ${Math.round(drag.y - drag.offY)}px) rotate(-2deg)`; }
-function showInd(x, y, len, vertical) {
-  const ind = $('#drop-ind'); ind.hidden = false; ind.classList.toggle('v', !!vertical);
-  ind.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
-  if (vertical) { ind.style.height = Math.round(len) + 'px'; ind.style.width = ''; } else { ind.style.width = Math.round(len) + 'px'; ind.style.height = ''; }
-}
-function hideInd() { $('#drop-ind').hidden = true; }
-function clearHover() { $$('.drop-hover').forEach(el => el.classList.remove('drop-hover')); }
-function updateTarget() {
-  if (!drag) return;
-  clearHover();
-  const el = document.elementFromPoint(drag.x, drag.y);
-  if (drag.type === 'card') {
-    const zone = el && el.closest('[data-drop]');
-    if (!zone) { drag.target = null; hideInd(); return; }
-    const key = zone.dataset.drop; zone.classList.add('drop-hover');
-    if (key.startsWith('newgroup')) { drag.target = { key }; hideInd(); return; }
-    const list = zone.querySelector('.cards');
-    const items = list ? Array.from(list.children).filter(n => n.classList.contains('card') && !n.classList.contains('lifted')) : [];
-    let before = null;
-    for (const it of items) { const r = it.getBoundingClientRect(); if (drag.y < r.top + r.height / 2) { before = it; break; } }
-    drag.target = { key, before: before ? before.dataset.card : null };
-    const lr = (list || zone).getBoundingClientRect();
-    let y; if (before) y = before.getBoundingClientRect().top - 6; else if (items.length) y = items[items.length - 1].getBoundingClientRect().bottom + 4; else y = lr.top + 6;
-    showInd(lr.left, y, lr.width, false);
-  } else {
-    const sec = el && el.closest('[data-gdrop]');
-    if (!sec) { drag.target = null; hideInd(); return; }
-    const groups = $$('.group', sec).filter(g => !g.classList.contains('lifted'));
-    let before = null;
-    for (const g of groups) { const r = g.getBoundingClientRect(); if (drag.y < r.top || (drag.y <= r.bottom && drag.x < r.left + r.width / 2)) { before = g; break; } }
-    drag.target = { theme: sec.dataset.gdrop, before: before ? before.dataset.group : null };
-    if (before) { const r = before.getBoundingClientRect(); showInd(r.left - 9, r.top, Math.min(r.height, 160), true); }
-    else if (groups.length) { const r = groups[groups.length - 1].getBoundingClientRect(); showInd(r.right + 6, r.top, Math.min(r.height, 160), true); }
-    else { const r = sec.querySelector('.groups').getBoundingClientRect(); showInd(r.left, r.top, 90, true); }
-  }
-}
-function autoScroll() {
-  if (!drag) return;
-  const el = document.elementFromPoint(drag.x, drag.y);
-  let sc = el && el.closest('.scroll');
-  if (sc && getComputedStyle(sc).overflowY === 'visible') sc = null;
-  const edge = 60; let moved = false;
-  if (sc) {
-    const r = sc.getBoundingClientRect();
-    if (drag.y < r.top + edge) { sc.scrollTop -= Math.ceil((r.top + edge - drag.y) / 4); moved = true; }
-    else if (drag.y > r.bottom - edge) { sc.scrollTop += Math.ceil((drag.y - (r.bottom - edge)) / 4); moved = true; }
-  } else {
-    const se = document.scrollingElement;
-    if (drag.y < edge) { se.scrollTop -= Math.ceil((edge - drag.y) / 4); moved = true; }
-    else if (drag.y > innerHeight - edge) { se.scrollTop += Math.ceil((drag.y - (innerHeight - edge)) / 4); moved = true; }
-  }
-  if (moved) updateTarget();
-  drag.raf = requestAnimationFrame(autoScroll);
-}
-function commitDrop() {
-  const t = drag && drag.target; if (!t) return;
-  pushUndo('Move');
-  if (drag.type === 'card') {
-    if (t.key === 'unsorted') moveCards(drag.ids, null, t.before);
-    else if (t.key.startsWith('g:')) moveCards(drag.ids, t.key.slice(2), t.before);
-    else if (t.key.startsWith('newgroup')) { const g = addGroup(t.key.split(':')[1] || null, ''); moveCards(drag.ids, g.id, null); ui.focusGroup = g.id; }
-    ui.selection.clear();
-  } else {
-    const g = P.groups[drag.ids[0]]; if (!g) return;
-    g.themeId = t.theme === 'none' ? null : t.theme;
-    P.groupOrder = P.groupOrder.filter(x => x !== g.id);
-    let idx = t.before ? P.groupOrder.indexOf(t.before) : -1;
-    if (idx < 0) { let last = -1; P.groupOrder.forEach((x, i) => { if ((P.groups[x].themeId || null) === g.themeId) last = i; }); idx = last < 0 ? P.groupOrder.length : last + 1; }
-    P.groupOrder.splice(idx, 0, g.id);
-  }
-  changed();
-}
-function endDrag() {
-  if (!drag) return;
-  cancelAnimationFrame(drag.raf);
-  if (drag.ghost) drag.ghost.remove();
+function endBoardPress() {
+  if (bp) { clearTimeout(bp.timer); cancelAnimationFrame(bp.raf); }
+  bp = null; drag = null;
+  if (!pointers.size) { window.removeEventListener('pointermove', onBoardMove); window.removeEventListener('pointerup', onBoardUp); window.removeEventListener('pointercancel', onBoardUp); }
   document.removeEventListener('touchmove', blockTouch);
-  document.body.classList.remove('is-dragging');
-  drag = null; hideInd(); clearHover();
-  renderBoard(); renderHeader();
+  document.body.classList.remove('is-dragging'); const cv = canvasEl(); if (cv) cv.classList.remove('panning');
+}
+function blockTouch(e) { if (bp && bp.started) e.preventDefault(); }
+function onBoardMove(e) {
+  if (pointers.has(e.pointerId)) pointers.set(e.pointerId, [e.clientX, e.clientY]);
+  if (pinch) { e.preventDefault(); updatePinch(); return; }
+  if (!bp) return;
+  bp.cx = e.clientX; bp.cy = e.clientY;
+  if (!bp.started) {
+    const d = Math.hypot(e.clientX - bp.x, e.clientY - bp.y);
+    if (bp.touch && bp.fromTray) { if (d > 10) endBoardPress(); return; }
+    if (d < 4) return;
+    beginBoardDrag();
+  }
+  e.preventDefault(); moveBoardDrag();
+}
+function beginBoardDrag() {
+  const b = bp; if (!b) return; b.started = true; drag = b;
+  document.body.classList.add('is-dragging'); hidePop(); hideSelTool();
+  if (b.touch) document.addEventListener('touchmove', blockTouch, { passive: false });
+  b.w0 = toWorld(b.x, b.y);
+  if (b.kind === 'pan') { b.cam0 = Object.assign({}, ui.cam); canvasEl().classList.add('panning'); return; }
+  if (b.kind === 'marquee') { const m = $('#marquee'); m.hidden = false; return; }
+  pushUndo(b.kind === 'resize' ? 'Resize' : 'Move');
+  if (b.kind === 'card') {
+    const ids = ui.selection.has(b.id) ? orderedSelection() : [b.id];
+    if (b.fromTray) {
+      b.ids = ids.filter(id => !onBoard(P.cards[id]));
+      const r0 = b.el.getBoundingClientRect(); b.off = [Math.min(b.x - r0.left, CW), b.y - r0.top];
+      const g = b.el.cloneNode(true); g.classList.add('drag-ghost'); g.classList.remove('sel', 'dim', 'open'); g.style.width = CW + 'px'; g.style.transformOrigin = '0 0'; g.removeAttribute('id');
+      if (b.ids.length > 1) g.insertAdjacentHTML('beforeend', `<span class="ghost-count">${b.ids.length}</span>`);
+      document.body.appendChild(g); b.ghost = g; b.el.classList.add('lifted');
+    } else {
+      b.ids = ids.filter(id => onBoard(P.cards[id]));
+      b.items = b.ids.map(id => ({ o: P.cards[id], x: P.cards[id].x, y: P.cards[id].y, el: $(`#world .card[data-card="${id}"]`) }));
+      b.items.forEach(it => it.el && it.el.classList.add('dragging'));
+    }
+  } else if (b.kind === 'frame' && b.frame) {
+    const f = b.frame; const isTheme = !!P.themes.includes(f);
+    const objs = [f];
+    if (isTheme) {
+      const gs = Object.values(P.groups).filter(g => g.themeId === f.id); objs.push(...gs);
+      gs.forEach(g => g.cardIds.forEach(id => objs.push(P.cards[id])));
+      Object.values(P.cards).filter(c => onBoard(c) && P.unsorted.includes(c.id) && inRect(centerOf(cardRect(c)), f)).forEach(c => objs.push(c));
+    } else f.cardIds.forEach(id => objs.push(P.cards[id]));
+    b.items = objs.filter(Boolean).map(o => ({ o, x: o.x, y: o.y, el: o === f ? b.el : (o.cardIds ? $(`#world [data-gframe="${o.id}"]`) : o.text != null ? $(`#world .card[data-card="${o.id}"]`) : null) }));
+  } else if (b.kind === 'resize' && b.frame) { b.w0f = b.frame.w; b.h0f = b.frame.h; b.el = b.el || $(`#world [data-gframe="${b.frame.id}"], #world [data-tframe="${b.frame.id}"]`); }
+  const tick = () => { if (!bp || !bp.started) return; edgePan(); bp.raf = requestAnimationFrame(tick); };
+  if (b.kind === 'card' || b.kind === 'frame' || b.kind === 'resize') b.raf = requestAnimationFrame(tick);
+}
+function edgePan() {
+  const b = bp; const cv = canvasEl(); if (!cv) return; const r = cv.getBoundingClientRect(); const E = 36;
+  if (b.cx < r.left || b.cx > r.right || b.cy < r.top || b.cy > r.bottom) return;
+  let dx = 0, dy = 0;
+  if (b.cx < r.left + E) dx = (r.left + E - b.cx) / 3; else if (b.cx > r.right - E) dx = -(b.cx - (r.right - E)) / 3;
+  if (b.cy < r.top + E) dy = (r.top + E - b.cy) / 3; else if (b.cy > r.bottom - E) dy = -(b.cy - (r.bottom - E)) / 3;
+  if (dx || dy) { ui.cam.x += dx; ui.cam.y += dy; applyCam(); moveBoardDrag(); }
+}
+function hoverFrameAt(pt) {
+  $$('#world .frame.drop-hover, .unsorted.drop-hover').forEach(el => el.classList.remove('drop-hover'));
+  const g = smallest(Object.values(P.groups).filter(f => inRect(pt, f)));
+  if (g) { const el = $(`#world [data-gframe="${g.id}"]`); if (el) el.classList.add('drop-hover'); }
+}
+function overTray(cx, cy) { const el = document.elementFromPoint(cx, cy); return !!(el && el.closest('.unsorted')); }
+function moveBoardDrag() {
+  const b = bp; if (!b) return;
+  if (b.kind === 'pan') { ui.cam.x = b.cam0.x + (b.cx - b.x); ui.cam.y = b.cam0.y + (b.cy - b.y); ui.camMoved = true; applyCam(); return; }
+  if (b.kind === 'marquee') {
+    const r = canvasEl().getBoundingClientRect(); const m = $('#marquee');
+    const x0 = Math.min(b.x, b.cx) - r.left, y0 = Math.min(b.y, b.cy) - r.top;
+    m.style.transform = `translate(${x0}px, ${y0}px)`; m.style.width = Math.abs(b.cx - b.x) + 'px'; m.style.height = Math.abs(b.cy - b.y) + 'px'; return;
+  }
+  const w = toWorld(b.cx, b.cy); const dx = w[0] - b.w0[0], dy = w[1] - b.w0[1];
+  if (b.kind === 'card') {
+    const tray = overTray(b.cx, b.cy); $('.unsorted').classList.toggle('drop-hover', tray);
+    if (b.ghost) {
+      const z = tray ? 1 : ui.cam.z;
+      b.ghost.style.transform = `translate(${b.cx - b.off[0] * z}px, ${b.cy - b.off[1] * z}px) scale(${z})`;
+      if (!tray) hoverFrameAt(w);
+      return;
+    }
+    b.items.forEach(it => { it.o.x = it.x + dx; it.o.y = it.y + dy; if (it.el) { it.el.style.left = Math.round(it.o.x) + 'px'; it.el.style.top = Math.round(it.o.y) + 'px'; } });
+    if (!tray) hoverFrameAt(w);
+  } else if (b.kind === 'frame') {
+    b.items.forEach(it => { it.o.x = it.x + dx; it.o.y = it.y + dy; if (it.el) { it.el.style.left = Math.round(it.o.x) + 'px'; it.el.style.top = Math.round(it.o.y) + 'px'; } });
+  } else if (b.kind === 'resize' && b.frame) {
+    const f = b.frame; f.w = Math.max(CW + PAD * 2, b.w0f + dx); f.h = Math.max(120, b.h0f + dy);
+    if (b.el) { b.el.style.width = Math.round(f.w) + 'px'; b.el.style.height = Math.round(f.h) + 'px'; }
+  }
+}
+function onBoardUp(e) {
+  pointers.delete(e.pointerId);
+  if (pinch) { if (pointers.size < 2) { pinch = null; if (!pointers.size) endBoardPress(); } return; }
+  if (!bp) { if (!pointers.size) endBoardPress(); return; }
+  const b = bp; clearTimeout(b.timer);
+  if (b.started) { finishBoardDrag(); suppressClick = true; setTimeout(() => { suppressClick = false; }, b.touch ? 350 : 0); }
+  else if (b.kind === 'pan' || b.kind === 'marquee') { if (!b.shift) clearSel(); const a = document.activeElement; if (a && a.classList && a.classList.contains('label-input')) a.blur(); }
+  endBoardPress();
+}
+function finishBoardDrag() {
+  const b = bp;
+  $$('#world .frame.drop-hover, .unsorted.drop-hover').forEach(el => el.classList.remove('drop-hover'));
+  if (b.kind === 'pan') return;
+  if (b.kind === 'marquee') {
+    $('#marquee').hidden = true;
+    const a = toWorld(Math.min(b.x, b.cx), Math.min(b.y, b.cy)), z = toWorld(Math.max(b.x, b.cx), Math.max(b.y, b.cy));
+    Object.values(P.cards).filter(onBoard).forEach(c => { const r = cardRect(c); if (r.x < z[0] && r.x + r.w > a[0] && r.y < z[1] && r.y + r.h > a[1]) ui.selection.add(c.id); });
+    $$('#world .card').forEach(el => el.classList.toggle('sel', ui.selection.has(el.dataset.card))); renderSelBar(); return;
+  }
+  if (b.kind === 'card') {
+    if (b.ghost) { b.ghost.remove(); }
+    if (overTray(b.cx, b.cy)) { (b.ghost ? b.ids : b.items.map(it => it.o.id)).forEach(id => { const c = P.cards[id]; if (c) { c.x = null; c.y = null; } }); }
+    else if (b.ghost) {
+      if (!document.elementFromPoint(b.cx, b.cy) || !document.elementFromPoint(b.cx, b.cy).closest('#canvas')) { renderBoard(); return; }
+      const z = ui.cam.z; const tl = toWorld(b.cx - b.off[0] * z, b.cy - b.off[1] * z); let y = tl[1];
+      b.ids.forEach(id => { const c = P.cards[id]; c.x = tl[0]; c.y = y; y += hOf(c) + GAP; });
+    }
+    // a card dropped with the pointer inside a group frame joins that group, even if its centre landed just outside
+    const wp = toWorld(b.cx, b.cy); const target = !overTray(b.cx, b.cy) && smallest(Object.values(P.groups).filter(f => inRect(wp, f)));
+    if (target) (b.ghost ? b.ids : b.items.map(it => it.o.id)).forEach(id => {
+      const c = P.cards[id]; if (!onBoard(c)) return; const r = cardRect(c);
+      const cx = clamp(r.x + r.w / 2, target.x + 2, target.x + target.w - 2), cy = clamp(r.y + r.h / 2, target.y + 2, target.y + target.h - 2);
+      c.x = cx - r.w / 2; c.y = cy - r.h / 2;
+    });
+    ui.selection.clear();
+  }
+  commitBoard();
+}
+function startPinch() {
+  if (bp && bp.started && (bp.kind === 'card' || bp.kind === 'frame' || bp.kind === 'resize')) { finishBoardDrag(); }
+  if (bp) { clearTimeout(bp.timer); cancelAnimationFrame(bp.raf); bp = null; drag = null; }
+  const [a, c] = [...pointers.values()]; const r = canvasEl().getBoundingClientRect();
+  pinch = { d0: Math.hypot(a[0] - c[0], a[1] - c[1]) || 1, m0: [(a[0] + c[0]) / 2 - r.left, (a[1] + c[1]) / 2 - r.top], cam0: Object.assign({}, ui.cam) };
+  window.addEventListener('pointermove', onBoardMove, { passive: false }); window.addEventListener('pointerup', onBoardUp); window.addEventListener('pointercancel', onBoardUp);
+}
+function updatePinch() {
+  const [a, c] = [...pointers.values()]; if (!a || !c) return; const r = canvasEl().getBoundingClientRect();
+  const d = Math.hypot(a[0] - c[0], a[1] - c[1]); const m = [(a[0] + c[0]) / 2 - r.left, (a[1] + c[1]) / 2 - r.top];
+  const z = clamp(pinch.cam0.z * d / pinch.d0, 0.12, 2.5);
+  const wx = (pinch.m0[0] - pinch.cam0.x) / pinch.cam0.z, wy = (pinch.m0[1] - pinch.cam0.y) / pinch.cam0.z;
+  ui.cam = { x: m[0] - wx * z, y: m[1] - wy * z, z }; ui.camMoved = true; applyCam();
+}
+function onCanvasWheel(e) {
+  e.preventDefault(); const r = canvasEl().getBoundingClientRect();
+  const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? r.height : 1;
+  if (e.ctrlKey || e.metaKey) { const k = Math.abs(e.deltaY * unit) < 40 ? 0.012 : 0.002; zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-e.deltaY * unit * k)); }
+  else { ui.camMoved = true; ui.cam.x -= (e.shiftKey && !e.deltaX ? e.deltaY : e.deltaX) * unit; ui.cam.y -= (e.shiftKey && !e.deltaX ? 0 : e.deltaY) * unit; applyCam(); }
 }
 
 /* ---------- report ---------- */
@@ -2480,7 +2683,7 @@ function openCodesRefresh() { const d = $('#dlg-codes'); if (d.open) { d.close()
 function openHelp() {
   const d = $('#dlg-help');
   d.innerHTML = `<form method="dialog"><div class="dlg-head"><h2>Shortcuts and your files</h2></div><div class="dlg-body">
-    <dl class="help-list"><dt>${MOD}S</dt><dd>Save the project file</dd><dt>K</dt><dd>Play or pause</dd><dt>J · L</dt><dd>Back or forward 5 seconds</dd><dt>Q</dt><dd>Pull the selected words as a quote</dd><dt>O</dt><dd>Add an observation at this moment, with a frame</dd><dt>1–9</dt><dd>Toggle a code on the open card</dd><dt>Shift-click</dt><dd>Select several cards on the board, then drag them together</dd><dt>Delete</dt><dd>Delete the selected cards</dd><dt>Ctrl/⌘ Z</dt><dd>Undo moves, codes and deletes</dd><dt>Esc</dt><dd>Close the card panel</dd></dl>
+    <dl class="help-list"><dt>${MOD}S</dt><dd>Save the project file</dd><dt>K</dt><dd>Play or pause</dd><dt>J · L</dt><dd>Back or forward 5 seconds</dd><dt>Q</dt><dd>Pull the selected words as a quote</dd><dt>O</dt><dd>Add an observation at this moment, with a frame</dd><dt>1–9</dt><dd>Toggle a code on the open card</dd><dt>Shift-click · Shift-drag</dt><dd>Select several cards on the board, then drag them together</dd><dt>G</dt><dd>Draw a group frame around the selected cards</dd><dt>${MOD}+ / ${MOD}− · Shift+1</dt><dd>Zoom the board in or out · fit everything</dd><dt>Delete</dt><dd>Delete the selected cards</dd><dt>Ctrl/⌘ Z</dt><dd>Undo moves, codes and deletes</dd><dt>Esc</dt><dd>Close the card panel</dd></dl>
     <div class="field"><span class="field-label">Where your work lives</span><p class="small muted">Nothing is saved automatically, and nothing is kept in this browser. Your project lives in this page until you save it with Save (${MOD}S), and closing or reloading the page discards unsaved changes. Opened from your disk in Chrome or Edge, Save writes to the same file each time. Inside the Claude app, each save goes through the app's save prompt and makes a new file. Recordings are read from your disk while the page is open and are never uploaded or saved in the project file, so link them again after you open a project. They're matched by file name.</p></div>
     <div class="field"><span class="field-label">Fixing transcript typos</span><p class="small muted">Hover a turn and click Edit. Each box is one caption from the VTT. A fix also updates quote cards that contain the same words. When this page is opened from your disk in Chrome or Edge and the transcript was imported in this sitting, Save also writes your fixes into the original VTT. It changes only the captions you edited, and first checks that the file hasn't changed. Otherwise, use Download corrected transcript in the session panel, or Update the original file to pick the VTT again.</p></div>
     <div class="field"><span class="field-label">Network</span><p class="small muted">This page makes no network connections. Its fonts are built in. Files leave the page only when you save or export them.</p></div>
@@ -2517,15 +2720,20 @@ function runAction(act, el) {
     case 'session-settings': openSessionSettings(id); break;
     case 'board-filter': ui.filterPeople = new Set([id]); setView('board'); break;
     case 'new-group': {
+      if (ui.view !== 'board') setView('board');
       pushUndo('New group');
-      const g = addGroup((el && el.dataset.theme) || null, '');
-      if (ui.selection.size) { moveCards(orderedSelection(), g.id, null); ui.selection.clear(); }
-      ui.focusGroup = g.id; changed(); if (ui.view !== 'board') setView('board'); else renderBoard(); renderHeader(); break;
+      if (ui.selection.size) { groupAround(orderedSelection()); ui.selection.clear(); }
+      else { const [cx, cy] = viewCenter(); const g = addGroup(null, ''); Object.assign(g, { x: cx - CW / 2 - PAD, y: cy - 110, w: CW + PAD * 2, h: 220 }); ui.focusGroup = g.id; }
+      commitBoard(); break;
     }
-    case 'new-theme': { pushUndo('New theme'); const t = addTheme(''); ui.focusTheme = t.id; changed(); renderBoard(); $('#wall').scrollTop = 0; break; }
+    case 'new-theme': {
+      if (ui.view !== 'board') setView('board');
+      pushUndo('New theme'); const [cx, cy] = viewCenter(); const t = addTheme(''); Object.assign(t, { x: cx - 380, y: cy - 240, w: 760, h: 480 });
+      ui.focusTheme = t.id; commitBoard(); break;
+    }
     case 'group-menu': openGroupMenu(el, id); break;
     case 'theme-menu': openThemeMenu(el, id); break;
-    case 'sort-unsorted': pushUndo('Sort unsorted'); P.unsorted = sortCardIds(P.unsorted); changed(); renderBoard(); toast('Unsorted cards sorted by participant, then time', { action: 'Undo', onAction: undo }); break;
+    case 'sort-unsorted': pushUndo('Sort unsorted'); P.unsorted = [...sortCardIds(P.unsorted.filter(id => !onBoard(P.cards[id]))), ...P.unsorted.filter(id => onBoard(P.cards[id]))]; changed(); renderBoard(); toast('Unsorted cards sorted by participant, then time', { action: 'Undo', onAction: undo }); break;
     default: break;
   }
 }
@@ -2655,12 +2863,9 @@ function bindEvents() {
 
   // board
   const board = $('#view-board');
-  board.addEventListener('pointerdown', e => {
-    if (e.button !== 0) return;
-    const grip = e.target.closest('.grip'); if (grip) { beginPress(e, 'group', grip.closest('.group')); return; }
-    if (e.target.closest('button, input, textarea, select, a, label')) return;
-    const card = e.target.closest('.card'); if (card) beginPress(e, 'card', card);
-  });
+  board.addEventListener('pointerdown', onBoardPointerDown);
+  $('#canvas').addEventListener('wheel', onCanvasWheel, { passive: false });
+  $('.zoombar').addEventListener('click', e => { const z = e.target.closest('[data-zoom]'); if (!z) return; if (z.dataset.zoom === 'in') zoomBy(1.25); else if (z.dataset.zoom === 'out') zoomBy(0.8); else fitView(); });
   board.addEventListener('keydown', e => {
     const card = e.target.classList && e.target.classList.contains('card') ? e.target : null; if (!card) return;
     if (e.key === 'Enter') { e.preventDefault(); openDrawer(card.dataset.card); }
@@ -2674,15 +2879,11 @@ function bindEvents() {
   });
   board.addEventListener('keydown', e => { if ((e.target.dataset.gtitle || e.target.dataset.ttitle) && e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
   board.addEventListener('change', e => {
-    if (e.target.dataset.gtitle || e.target.dataset.ttitle) { renderSelBar(); if (ui.drawerId) renderDrawerGroup(); return; }
+    if (e.target.dataset.gtitle || e.target.dataset.ttitle) { renderSelBar(); if (ui.drawerId) renderDrawerGroup(); const fr = e.target.closest('.frame'); if (fr) { ui.labelH.set(fr.dataset.gframe || fr.dataset.tframe, fr.querySelector('.flabel').offsetHeight); const before = JSON.stringify([...Object.values(P.groups), ...P.themes].map(f => [f.y, f.h])); autoGrow(); if (JSON.stringify([...Object.values(P.groups), ...P.themes].map(f => [f.y, f.h])) !== before) { changed(); setTimeout(renderBoard, 0); } } return; }
     if (e.target.id === 'filter-code') { ui.filterCode = e.target.value; renderBoard(); }
     else if (e.target.id === 'toggle-thumbs') { ui.thumbs = e.target.checked; renderBoard(); }
     else if (e.target.id === 'sel-move') {
-      const v = e.target.value; if (!v) return; const ids = orderedSelection(); pushUndo('Move');
-      if (v === '__unsorted') moveCards(ids, null, null);
-      else if (v === '__new') { const g = addGroup(null, ''); moveCards(ids, g.id, null); ui.focusGroup = g.id; }
-      else moveCards(ids, v, null);
-      ui.selection.clear(); changed(); renderBoard(); renderHeader();
+      const v = e.target.value; if (!v) return; const ids = orderedSelection(); ui.selection.clear(); moveCardsTo(ids, v);
     } else if (e.target.id === 'sel-code') {
       const k = e.target.value; if (!k) return; pushUndo('Add code');
       orderedSelection().forEach(id => { const c = P.cards[id]; if (c && !c.tags.includes(k)) c.tags.push(k); }); bumpRecent(k);
@@ -2695,6 +2896,7 @@ function bindEvents() {
     const chip = e.target.closest('[data-person]');
     if (chip) { const id = chip.dataset.person; if (ui.filterPeople.has(id)) ui.filterPeople.delete(id); else ui.filterPeople.add(id); renderBoard(); return; }
     if (e.target.id === 'sel-delete') deleteCards(orderedSelection());
+    if (e.target.closest('#sel-group')) { pushUndo('New group'); groupAround(orderedSelection()); ui.selection.clear(); commitBoard(); }
     if (e.target.id === 'sel-clear') { ui.selection.clear(); renderBoard(); }
   });
   const boardSearchRender = debounce(() => renderBoard(), 200);
@@ -2728,10 +2930,10 @@ function bindEvents() {
   $('#d-code-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addCodeFromInput(); } });
   $('#d-code-add').addEventListener('click', addCodeFromInput);
   $('#d-group').addEventListener('change', e => {
-    const c = P.cards[ui.drawerId]; if (!c) return; pushUndo('Move');
+    const c = P.cards[ui.drawerId]; if (!c) return;
     let v = e.target.value;
-    if (v === '__new') { const g = addGroup(null, ''); v = g.id; ui.focusGroup = ui.view === 'board' ? g.id : null; }
-    moveCards([c.id], v || null, null); changed(); renderDrawerGroup(); if (ui.view === 'board') renderBoard(); else refreshSoon();
+    if (ui.view !== 'board' && v === '__new') ui.focusGroup = null;
+    moveCardsTo([c.id], v || '__unsorted'); renderDrawerGroup(); if (ui.view !== 'board') refreshSoon();
   });
   $('#d-show').addEventListener('click', () => {
     const c = P.cards[ui.drawerId]; if (!c) return;
@@ -2758,8 +2960,11 @@ function bindEvents() {
       return;
     }
     if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'z' && !typing) { e.preventDefault(); undo(); return; }
+    if (ui.view === 'board' && !typing && (e.metaKey || e.ctrlKey) && ['=', '+', '-', '0'].includes(e.key)) { e.preventDefault(); if (e.key === '0') fitView(); else zoomBy(e.key === '-' ? 0.8 : 1.25); return; }
     if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
     const k = e.key.toLowerCase();
+    if (ui.view === 'board' && e.key === '!' ) { e.preventDefault(); fitView(); return; }
+    if (ui.view === 'board' && k === 'g' && ui.selection.size) { e.preventDefault(); pushUndo('New group'); groupAround(orderedSelection()); ui.selection.clear(); commitBoard(); return; }
     if (ui.view === 'board' && (e.key === 'Delete' || e.key === 'Backspace') && ui.selection.size) { e.preventDefault(); deleteCards(orderedSelection()); return; }
     if (ui.drawerId && /^[1-9]$/.test(e.key)) { const kk = P.codes[+e.key - 1]; if (kk) { e.preventDefault(); toggleCode(P.cards[ui.drawerId], kk.id); } return; }
     if (k === 'q' && ui.view === 'transcripts') { if (pullQuote(null)) e.preventDefault(); return; }
@@ -2782,7 +2987,7 @@ function boot() {
   $('#player').playbackRate = ui.rate;
   renderHeader(); renderNotices(); renderView(); renderSaveState();
   measureTop();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { $$('textarea.label-input').forEach(autosize); measureTop(); positionMarks(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { $$('textarea.label-input').forEach(autosize); measureTop(); positionMarks(); if (ui.view === 'board') { if (!ui.camMoved) ui.camFor = null; renderBoard(); } });
   checkLegacy();
 }
 boot();
