@@ -119,6 +119,8 @@ select{padding-right:6px}
 .save-status{font-size:12px;color:var(--ink-3);white-space:nowrap}
 .save-status{max-width:30ch;overflow:hidden;text-overflow:ellipsis}
 .save-status.dirty{color:var(--ink);font-weight:500}
+#btn-autosave.on{border-color:var(--ok);color:var(--ok)}
+#btn-autosave.on::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok)}
 #btn-save.dirty::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--note-y);box-shadow:0 0 0 1px var(--note-y-edge)}
 #notices:empty{display:none}
 #notices{display:flex;flex-direction:column;gap:8px;padding-bottom:10px}
@@ -132,7 +134,13 @@ select{padding-right:6px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px}
 
 /* transcripts view */
-.tx-layout{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:16px;height:100%}
+.tx-layout{display:grid;grid-template-columns:minmax(220px,var(--side-w,330px)) 14px minmax(0,1fr);gap:0;height:100%}
+.splitter{position:relative;cursor:col-resize;touch-action:none}
+.splitter::before{content:"";position:absolute;left:6px;top:0;bottom:0;width:2px;border-radius:1px;background:transparent;transition:background .12s}
+.splitter:hover::before,.splitter:focus-visible::before,.splitter.active::before,.drawer-split:hover::before,.drawer-split.active::before{background:var(--accent)}
+.drawer-split{position:absolute;left:-5px;top:0;bottom:0;width:10px;cursor:col-resize;z-index:2;touch-action:none}
+.drawer-split::before{content:"";position:absolute;left:4px;top:0;bottom:0;width:2px;background:transparent}
+body.resizing,body.resizing *{cursor:col-resize!important;user-select:none!important}
 .tx-side{display:flex;flex-direction:column;gap:16px;padding-bottom:16px;padding-right:2px}
 .side-block{display:flex;flex-direction:column;gap:8px}
 .side-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -201,6 +209,72 @@ mark.hit.cur{background:var(--accent);color:var(--accent-ink);box-shadow:none}
 .qs.hl{box-shadow:0 2px 0 var(--ink-2)}
 .turn.flash{animation:flash 1.8s ease-out}
 @keyframes flash{0%,30%{background:var(--accent-tint)}100%{background:transparent}}
+/* quotes coloured by their first code; overlapping quotes show stacked bands */
+:root{--qmix:30%}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--qmix:42%}}
+:root[data-theme="dark"]{--qmix:42%}
+.qs.qa{border-left:2px solid var(--note-y-edge);padding-left:1px;margin-left:-1px;border-radius:2px 0 0 2px}
+.qs.qa[data-qa="1"]{border-left-color:var(--k1)}.qs.qa[data-qa="2"]{border-left-color:var(--k2)}.qs.qa[data-qa="3"]{border-left-color:var(--k3)}.qs.qa[data-qa="4"]{border-left-color:var(--k4)}
+.qs.qa[data-qa="5"]{border-left-color:var(--k5)}.qs.qa[data-qa="6"]{border-left-color:var(--k6)}.qs.qa[data-qa="7"]{border-left-color:var(--k7)}.qs.qa[data-qa="8"]{border-left-color:var(--k8)}
+.mark.coded{background:color-mix(in srgb,var(--mc) 45%,var(--panel));border-color:var(--mc)}
+/* drag handles on the ends of a quote */
+.transcript{position:relative}
+.qhandles{position:absolute;inset:0;pointer-events:none;z-index:3}
+.qhandles .qh{position:absolute;left:0;top:0;width:12px;cursor:ew-resize;pointer-events:auto;touch-action:none;display:none}
+.qhandles.on .qh{display:block}
+.qhandles.dragging .qh{pointer-events:none}
+.qh::before{content:"";position:absolute;left:5px;top:-2px;bottom:-2px;width:2px;border-radius:1px;background:var(--accent)}
+.qh::after{content:"";position:absolute;left:2px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--panel)}
+.qh[data-qh="0"]::after{top:-8px}
+.qh[data-qh="1"]::after{bottom:-8px}
+.qh:hover::before{width:3px}
+.qprev{position:absolute;left:0;top:0;background:color-mix(in srgb,var(--accent) 22%,transparent);outline:1px dashed var(--accent);border-radius:2px;pointer-events:none}
+body.qdragging,body.qdragging *{cursor:ew-resize!important;user-select:none!important;-webkit-user-select:none!important}
+/* regions */
+.region-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;padding:8px 14px;background:var(--accent-tint);border-bottom:1px solid var(--line-2);font-size:13px}
+#btn-region[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.transcript.region-mode .cue{cursor:crosshair}
+.transcript.region-mode .cue:hover{background:var(--accent-tint);border-radius:2px}
+.turn.in-region{box-shadow:inset 3px 0 0 var(--rc);border-radius:0 6px 6px 0;background:color-mix(in srgb,var(--rc) 5%,transparent)}
+.region-head{display:flex;align-items:center;gap:10px;margin:14px 0 2px;padding:4px 10px;border-left:3px solid var(--rc);font-size:12px;color:var(--ink-2)}
+.region-head .rlabel{font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:color-mix(in srgb,var(--rc) 22%,var(--panel));padding:1px 8px;border-radius:3px}
+.regions{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.regions li{display:grid;grid-template-columns:10px minmax(0,1fr) auto auto;align-items:center;gap:8px;font-size:13px}
+.regions .rdot{width:10px;height:10px;border-radius:2px;background:var(--rc)}
+.regions li .link:not(.small){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.regions li .mono{white-space:nowrap}
+.region-form{display:flex;flex-direction:column;gap:8px}
+.region-form input[type=text]{width:100%}
+.rg-chips{display:flex;flex-wrap:wrap;gap:6px}
+.rg-chip{border:1px solid var(--rc);background:color-mix(in srgb,var(--rc) 16%,var(--panel));color:var(--ink);border-radius:12px;padding:2px 10px;font-size:12.5px}
+.rg-times{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rg-times label{display:flex;flex-direction:column;gap:4px}
+.rtag{display:inline-flex;align-items:center;font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;line-height:1.6;padding:0 6px;border-radius:3px;background:color-mix(in srgb,var(--rc) 22%,transparent);color:var(--note-y-ink)}
+/* board search */
+mark.bhit{background:var(--hit);color:inherit;border-radius:2px;box-shadow:0 0 0 1px var(--hit-edge)}
+.card.hit{outline:2px solid var(--hit-edge);outline-offset:2px}
+.card.cur{outline:3px solid var(--accent);outline-offset:3px}
+/* code picker */
+.code-suggest{list-style:none;margin:6px 0 0;padding:4px;border:1px solid var(--line);border-radius:8px;background:var(--panel);box-shadow:var(--pop-shadow);max-height:240px;overflow:auto}
+.code-suggest li{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;font-size:13.5px}
+.code-suggest li b{font-weight:700}
+.code-suggest li .hint{margin-left:auto;font-size:11.5px;color:var(--ink-3)}
+.code-suggest li.active{background:var(--accent-tint)}
+.code-suggest li.create{border-top:1px solid var(--line-2);margin-top:2px;color:var(--ink-2)}
+.code-suggest li.create b{color:var(--ink)}
+/* several snapshots */
+.card .thumbwrap{position:relative}
+.snapcount{position:absolute;right:5px;bottom:5px;font:600 11px/1 var(--font-mono);background:rgba(0,0,0,.66);color:#fff;padding:3px 5px;border-radius:3px}
+.d-snaps{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.snap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.snap-grid .snap{margin:0;display:flex;flex-direction:column;gap:4px;padding:5px;border:1px solid var(--line-2);border-radius:7px}
+.snap-grid .snap.main{border-color:var(--accent)}
+.snap-grid img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px;background:var(--screen)}
+.snap-grid figcaption{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;font-size:12px}
+.danger-link{color:var(--danger)}
+.r-snaps{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start}
+.r-snaps .r-snap:first-child{grid-column:1/-1}
+
 .empty-state{max-width:560px;margin:7vh auto 0;display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding:0 4px}
 .empty-state h2{font-stretch:82%;font-weight:700;font-size:24px;line-height:1.2;text-wrap:balance}
 .empty-state p{color:var(--ink-2);line-height:1.55}
@@ -222,7 +296,7 @@ mark.hit.cur{background:var(--accent);color:var(--accent-ink);box-shadow:none}
 #view-board{display:flex;flex-direction:column}
 .board-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding-bottom:10px}
 .board-bar input[type=search]{width:min(220px,100%)}
-.board-bar .spacer{flex:1}
+.board-bar .spacer,.dlg-foot .spacer{flex:1}
 .people{display:flex;gap:4px;flex-wrap:wrap}
 .pchip{font-family:var(--font-mono);font-size:12px;padding:3px 8px;border-radius:5px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2)}
 .pchip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
@@ -407,6 +481,7 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
   .view{height:auto}
   .scroll{overflow:visible}
   .tx-layout{grid-template-columns:minmax(0,1fr);height:auto;gap:12px}
+  .splitter,.drawer-split{display:none}
   .tx-side{display:contents}
   #player-block{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--wall);padding-block:6px}
   #player-block .player-frame{max-height:30vh;aspect-ratio:auto;height:min(30vh,calc((100vw - 32px)*9/16))}
@@ -416,6 +491,7 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
   .brand{order:1}
   .top-right{order:2;margin-left:auto}
   .save-status{display:none}
+  #btn-autosave{display:none}
   .tabs{order:3}
   .project-name{order:4;width:100%}
   #session-meta{order:5}
@@ -447,6 +523,7 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
     <div class="top-right">
       <span class="save-status" id="save-status" aria-live="polite"></span>
       <button type="button" class="btn" id="btn-import" data-action="import">Import files</button>
+      <button type="button" class="btn" id="btn-autosave" data-action="autosave" aria-pressed="false">Autosave off</button>
       <button type="button" class="btn primary" id="btn-save" data-action="save-project">Save</button>
       <button type="button" class="btn" id="btn-menu" aria-haspopup="menu">More</button>
     </div>
@@ -478,9 +555,11 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
           </div>
           <div class="side-block" id="session-meta"></div>
         </div>
+        <div class="splitter" id="split-side" role="separator" aria-orientation="vertical" aria-label="Resize the video and session panel" tabindex="0"></div>
         <div class="tx-main">
           <div class="tx-head" id="tx-head">
             <div class="tx-title" id="tx-title"></div>
+            <button type="button" class="btn sm" id="btn-region" data-action="region-start" aria-pressed="false" title="Label a stretch of this session, such as the intro">Mark region</button>
             <div class="search" role="search">
               <input type="search" id="tx-search" placeholder="Find in this transcript" aria-label="Find in this transcript" autocomplete="off">
               <span class="count mono" id="tx-search-count" aria-live="polite"></span>
@@ -488,6 +567,7 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
               <button type="button" class="btn sm ghost" id="tx-next" aria-label="Next match">↓</button>
             </div>
           </div>
+          <div class="region-bar" id="region-bar" role="status" hidden></div>
           <div class="tx-scroll scroll" id="tx-scroll"><div class="transcript" id="transcript"></div></div>
         </div>
       </div>
@@ -495,9 +575,10 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
 
     <section class="view" id="view-board" aria-label="Board" hidden>
       <div class="board-bar">
-        <input type="search" id="board-search" placeholder="Search cards" aria-label="Search cards" autocomplete="off">
+        <div class="search" role="search"><input type="search" id="board-search" placeholder="Find text, notes or codes" aria-label="Find cards by text, note or code" autocomplete="off"><span class="count mono" id="board-search-count" aria-live="polite"></span><button type="button" class="btn sm ghost" id="board-prev" aria-label="Previous match">↑</button><button type="button" class="btn sm ghost" id="board-next" aria-label="Next match">↓</button></div>
         <div class="people" id="filter-people" role="group" aria-label="Filter by participant"></div>
         <select id="filter-code" aria-label="Filter by code"></select>
+        <select id="filter-region" aria-label="Filter by region"></select>
         <label class="check" for="toggle-thumbs"><input type="checkbox" id="toggle-thumbs" checked> Snapshots</label>
         <span class="spacer"></span>
         <button type="button" class="btn" id="btn-new-theme" data-action="new-theme">New theme</button>
@@ -533,6 +614,7 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
 </div>
 
 <aside class="drawer" id="drawer" aria-label="Card details" hidden>
+  <div class="drawer-split" id="split-drawer" role="separator" aria-orientation="vertical" aria-label="Resize the card panel" tabindex="0"></div>
   <div class="drawer-head">
     <div class="d-meta" id="d-meta"></div>
     <button type="button" class="btn sm ghost" id="d-close" aria-label="Close card">Close</button>
@@ -554,10 +636,7 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
         </div>
         <div class="d-grab-row"><button type="button" class="btn" id="d-grab">Grab this frame</button></div>
       </div>
-      <figure class="d-snap" id="d-snap" hidden>
-        <img id="d-snap-img" alt="">
-        <figcaption><span>Snapshot at <span class="mono" id="d-snap-time"></span></span><button type="button" class="link small" id="d-snap-remove">Remove snapshot</button></figcaption>
-      </figure>
+      <div class="d-snaps" id="d-snaps" hidden></div>
     </div>
     <div class="field">
       <label class="field-label" for="d-text" id="d-text-label">Quote</label>
@@ -570,8 +649,8 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
     <div class="field">
       <div class="field-row"><span class="field-label">Codes</span><button type="button" class="link small" data-action="codes">Manage codes</button></div>
       <div class="code-toggles" id="d-codes"></div>
-      <div class="code-add"><input type="text" id="d-code-input" list="code-datalist" placeholder="Add a code, then press Enter" autocomplete="off"><button type="button" class="btn sm" id="d-code-add">Add</button></div>
-      <datalist id="code-datalist"></datalist>
+      <div class="code-add"><input type="text" id="d-code-input" placeholder="Find or create a code" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="d-code-list" aria-autocomplete="list"><button type="button" class="btn sm" id="d-code-add">Add</button></div>
+      <ul class="code-suggest" id="d-code-list" role="listbox" hidden></ul>
     </div>
     <div class="field">
       <label class="field-label" for="d-group">Group</label>
@@ -595,6 +674,7 @@ dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
 <dialog id="dlg-confirm"></dialog>
 <dialog id="dlg-help"></dialog>
 <dialog id="dlg-copy"></dialog>
+<dialog id="dlg-region"></dialog>
 <input type="file" id="file-import" multiple accept=".vtt,.srt,.json,video/*,audio/*,.mp4,.m4v,.mov,.webm,.m4a,.mp3,.wav" hidden>
 <input type="file" id="file-project" accept=".json,application/json" hidden>
 <input type="file" id="file-relink" accept="video/*,audio/*,.mp4,.m4v,.mov,.webm,.m4a,.mp3,.wav" hidden>
@@ -766,7 +846,7 @@ function guessResearcher(parsed) {
 let P = null;
 const ui = {
   view: 'transcripts', sessionId: null, search: '', hitIdx: -1, hitCount: 0, nowCue: -1, follow: true, rate: 1, userScrollAt: 0,
-  filterPeople: new Set(), filterCode: '', boardSearch: '', thumbs: true, selection: new Set(),
+  filterPeople: new Set(), filterCode: '', filterRegion: '', boardSearch: '', boardHitIdx: -1, thumbs: true, selection: new Set(), codeActive: 0, codeItems: [], regionMode: null, qdrag: null,
   drawerId: null, recentCodes: [], cam: { x: 40, y: 40, z: 1 }, camFor: null, cardH: new Map(), labelH: new Map(), dismissRelink: false, focusGroup: null, focusTheme: null, relinkTarget: null,
 };
 const media = {};
@@ -813,7 +893,15 @@ function normalize(input) {
       const v = obj(s.speakers[raw]);
       speakers[str(raw, 120)] = { display: str(v.display, 120).trim() || str(raw, 120), role: v.role === 'researcher' ? 'researcher' : 'participant' };
     }
-    p.sessions.push({ id, label: str(s.label, 16).trim() || 'P?', title: str(s.title, 120), transcriptName: str(s.transcriptName, 300), videoName: str(s.videoName, 300), videoSize: Math.max(0, num(s.videoSize, 0)), duration: Math.max(0, num(s.duration, 0)), cues, speakers, createdAt: num(s.createdAt, Date.now()) });
+    const regions = [];
+    for (const r of list(s.regions).slice(0, 500)) {
+      if (!r || typeof r !== 'object') continue;
+      const label = str(r.label, 60).trim().replace(/\s+/g, ' '); const st = Math.max(0, num(r.start, NaN)), en = num(r.end, NaN);
+      if (!label || !Number.isFinite(st) || !Number.isFinite(en) || en <= st) continue;
+      const rid = fixId(r.id, 'r'); if (regions.some(x => x.id === rid)) continue;
+      regions.push({ id: rid, label, start: st, end: en });
+    }
+    p.sessions.push({ id, label: str(s.label, 16).trim() || 'P?', title: str(s.title, 120), transcriptName: str(s.transcriptName, 300), videoName: str(s.videoName, 300), videoSize: Math.max(0, num(s.videoSize, 0)), duration: Math.max(0, num(s.duration, 0)), cues, speakers, regions: regions.sort((a, b) => a.start - b.start), createdAt: num(s.createdAt, Date.now()) });
   }
   const codeIds = new Set();
   for (const k of list(src.codes)) {
@@ -841,11 +929,14 @@ function normalize(input) {
     const off = (v, i) => { const x = num(v, NaN); return i != null && Number.isInteger(x) ? clamp(x, 0, s.cues[i].t.length) : null; };
     let o0 = off(c.o0, ci0), o1 = off(c.o1, ci1); if (o0 != null && o1 != null && ci0 === ci1 && o1 <= o0) { o0 = null; o1 = null; }
     const start = Math.max(0, num(c.start, 0));
-    const snap = typeof c.snapshot === 'string' && SNAP_RE.test(c.snapshot) ? c.snapshot : null;
+    const extra = list(c.moreSnaps).filter(x => x && typeof x.d === 'string' && SNAP_RE.test(x.d)).slice(0, 24).map(x => ({ d: x.d, t: Math.max(0, num(x.t, 0)) }));
+    let snap = typeof c.snapshot === 'string' && SNAP_RE.test(c.snapshot) ? c.snapshot : null;
+    let snapT = num(c.snapshotTime, num(c.start, 0));
+    if (!snap && extra.length) { const f = extra.shift(); snap = f.d; snapT = f.t; }
     p.cards[id] = {
       id, kind: c.kind === 'obs' ? 'obs' : 'quote', sessionId: s.id, speaker: c.speaker == null || c.speaker === '__proto__' ? null : str(c.speaker, 120),
       text: str(c.text, 20000), note: str(c.note, 20000), tags: [...new Set(list(c.tags).map(t => fixId(t, 'k')).filter(t => codeIds.has(t)))],
-      start, end: Math.max(start, num(c.end, start)), ci0, ci1, o0, o1, ...pos(c), snapshot: snap, snapshotTime: snap ? Math.max(0, num(c.snapshotTime, start)) : null, createdAt: num(c.createdAt, Date.now()),
+      start, end: Math.max(start, num(c.end, start)), ci0, ci1, o0, o1, ...pos(c), snapshot: snap, snapshotTime: snap ? Math.max(0, snapT) : null, moreSnaps: snap ? extra : [], createdAt: num(c.createdAt, Date.now()),
     };
   }
   const placed = new Set();
@@ -875,7 +966,14 @@ function participantSpeaker(s) { const e = Object.entries(s.speakers || {}).find
 function groupOfCard(id) { for (const gid of P.groupOrder) if (P.groups[gid].cardIds.includes(id)) return P.groups[gid]; return null; }
 function sessionCards(sid) { return Object.values(P.cards).filter(c => c.sessionId === sid); }
 function themeGroups(themeId) { return P.groupOrder.map(id => P.groups[id]).filter(g => (g.themeId || null) === (themeId || null)); }
-function makeCard(o) { return Object.assign({ id: uid('c'), kind: 'quote', sessionId: null, speaker: null, text: '', note: '', tags: [], start: 0, end: 0, ci0: null, ci1: null, o0: null, o1: null, snapshot: null, snapshotTime: null, createdAt: Date.now() }, o); }
+/* Regions label a stretch of a session (for example "Intro" or "Task 2"). They are stored as start and end times,
+   so they work for transcripts and for recordings without one. A card is in a region when its start time is. */
+const regionsOf = s => (s && s.regions) || [];
+function cardRegions(c) { const s = sessionById(c.sessionId); return regionsOf(s).filter(r => c.start >= r.start && c.start < r.end); }
+function allRegionLabels() { const m = new Map(); for (const s of P.sessions) for (const r of regionsOf(s)) if (!m.has(r.label.toLowerCase())) m.set(r.label.toLowerCase(), r.label); return [...m.values()].sort((a, b) => a.localeCompare(b)); }
+function regionColor(label) { let h = 7; for (const ch of String(label).toLowerCase()) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return (h % 7) + 1; }
+function quoteColor(c) { for (const t of (c && c.tags) || []) { const k = codeById(t); if (k) return k.color; } return 0; }
+function makeCard(o) { return Object.assign({ id: uid('c'), kind: 'quote', sessionId: null, speaker: null, text: '', note: '', tags: [], start: 0, end: 0, ci0: null, ci1: null, o0: null, o1: null, snapshot: null, snapshotTime: null, moreSnaps: [], createdAt: Date.now() }, o); }
 function addCard(c) { P.cards[c.id] = c; P.unsorted.push(c.id); }
 function ensureCode(name) {
   name = String(name || '').trim().replace(/\s+/g, ' ');
@@ -922,7 +1020,7 @@ function createSession(parsed, o) {
     if (role === 'researcher') { rc++; speakers[sp] = { role, display: rc > 1 ? `Researcher ${rc}` : 'Researcher' }; }
     else { pc++; speakers[sp] = { role, display: pc > 1 ? `${o.label}-${pc}` : o.label }; }
   }
-  return { id: uid('s'), label: o.label, title: o.title || '', transcriptName: o.transcriptName || '', videoName: '', videoSize: 0, duration: parsed.duration || 0, cues: parsed.cues, speakers, createdAt: Date.now() };
+  return { id: uid('s'), label: o.label, title: o.title || '', transcriptName: o.transcriptName || '', videoName: '', videoSize: 0, duration: parsed.duration || 0, cues: parsed.cues, speakers, regions: [], createdAt: Date.now() };
 }
 
 /* ---------- undo ---------- */
@@ -931,6 +1029,8 @@ function pushUndo(label, extra) {
     cards: Object.assign({}, P.cards),
     tags: Object.fromEntries(Object.values(P.cards).map(c => [c.id, c.tags.slice()])),
     pos: Object.fromEntries(Object.values(P.cards).map(c => [c.id, [c.x == null ? null : c.x, c.y == null ? null : c.y]])),
+    snaps: Object.fromEntries(Object.values(P.cards).map(c => [c.id, allSnaps(c)])),
+    regions: Object.fromEntries(P.sessions.map(x => [x.id, regionsOf(x).map(r => Object.assign({}, r))])),
     unsorted: P.unsorted.slice(),
     groups: Object.fromEntries(Object.entries(P.groups).map(([k, g]) => [k, Object.assign({}, g, { cardIds: g.cardIds.slice() })])),
     groupOrder: P.groupOrder.slice(), themes: P.themes.map(t => Object.assign({}, t)), codes: P.codes.map(k => Object.assign({}, k)),
@@ -944,10 +1044,12 @@ function undo() {
   Object.assign(P, { cards: s.cards, unsorted: s.unsorted, groups: s.groups, groupOrder: s.groupOrder, themes: s.themes, codes: s.codes });
   for (const [id, tags] of Object.entries(s.tags)) if (P.cards[id]) P.cards[id].tags = tags;
   for (const [id, xy] of Object.entries(s.pos || {})) if (P.cards[id]) { P.cards[id].x = xy[0]; P.cards[id].y = xy[1]; }
+  for (const [id, arr] of Object.entries(s.snaps || {})) if (P.cards[id]) setSnaps(P.cards[id], arr.slice());
+  for (const [sid, rs] of Object.entries(s.regions || {})) { const ss = sessionById(sid); if (ss) ss.regions = rs; }
   if (e.extra) {
     const ss = sessionById(e.extra.sid);
     if (ss) e.extra.cues.forEach(r => { const cue = ss.cues[r.i]; if (!cue) return; cue.t = r.t; if (r.o == null) delete cue.o; else cue.o = r.o; });
-    e.extra.cards.forEach(r => { const c = P.cards[r.id]; if (c) { c.text = r.text; if ('o0' in r) { c.o0 = r.o0; c.o1 = r.o1; } } });
+    e.extra.cards.forEach(r => { const c = P.cards[r.id]; if (c) { c.text = r.text; if ('o0' in r) { c.o0 = r.o0; c.o1 = r.o1; } if ('ci0' in r) { c.ci0 = r.ci0; c.ci1 = r.ci1; c.start = r.start; c.end = r.end; c.speaker = r.speaker; } } });
     ui.edit = null;
   }
   ui.selection.clear();
@@ -957,23 +1059,51 @@ function undo() {
 }
 
 /* ---------- saving (manual only) ---------- */
-const save = { dirty: false, at: 0, ver: 0, handle: null, name: '', busy: false };
+const save = { dirty: false, at: 0, ver: 0, handle: null, name: '', busy: false, auto: false, timer: null };
 /* Original transcript files picked or dropped in this sitting (Chrome and Edge only), by session. Never stored. */
 const transcriptFiles = new Map();
 const MOD = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || '') ? '⌘' : 'Ctrl+';
-function changed() { if (typeof freshLayouts !== 'undefined') freshLayouts.delete(P); P.updatedAt = Date.now(); save.ver++; if (!save.dirty) { save.dirty = true; renderSaveState(); } }
-function resetSaveState(name, handle) { ui.edit = null; transcriptFiles.clear(); save.dirty = false; save.at = 0; save.handle = handle || null; save.name = name || ''; renderSaveState(); }
+function changed() {
+  if (typeof freshLayouts !== 'undefined') freshLayouts.delete(P); P.updatedAt = Date.now(); save.ver++;
+  if (!save.dirty) { save.dirty = true; renderSaveState(); }
+  if (save.auto) { clearTimeout(save.timer); save.timer = setTimeout(autoSaveNow, 1200); }
+}
+/* Autosave: after each change (1.2 s of quiet), the project is written to the file you chose when you turned it on.
+   Only where the page can write to a file directly (Chrome or Edge, page opened from disk). */
+async function autoSaveNow() {
+  if (!save.auto || !save.handle || !save.dirty) return;
+  if (save.busy) { clearTimeout(save.timer); save.timer = setTimeout(autoSaveNow, 800); return; }
+  save.busy = true;
+  try { const ver = save.ver; await writeHandle(save.handle, JSON.stringify(Object.assign({}, P, { savedAt: new Date().toISOString() }))); markSaved(save.handle.name, ver); }
+  catch (e) { save.auto = false; renderSaveState(); toast(`Autosave stopped: ${txFailReason(e)}. Press Save to choose a file.`, { ms: 9000 }); }
+  finally { save.busy = false; }
+}
+async function toggleAutosave() {
+  if (save.auto) { save.auto = false; clearTimeout(save.timer); renderSaveState(); toast('Autosave off. Changes are saved when you press Save.'); return; }
+  if (!canPick()) { toast('Autosave needs to write to a file directly. Open this page from your disk in Chrome or Edge to use it.', { ms: 8000 }); return; }
+  let h;
+  try { h = await window.showSaveFilePicker({ suggestedName: save.name || `${slug(P.name)}.affinity.json`, types: [PICK_TYPES.json] }); }
+  catch (e) { return; }
+  try {
+    const ver = save.ver; await writeHandle(h, JSON.stringify(Object.assign({}, P, { savedAt: new Date().toISOString() })));
+    save.handle = h; save.auto = true; markSaved(h.name, ver); toast(`Autosave on. Every change is saved to ${h.name}.`, { ms: 5000 });
+  } catch (e) { toast(`Couldn't write to ${h.name}: ${txFailReason(e)}.`); }
+}
+function resetSaveState(name, handle) { ui.edit = null; transcriptFiles.clear(); save.auto = false; clearTimeout(save.timer); save.dirty = false; save.at = 0; save.handle = handle || null; save.name = name || ''; renderSaveState(); }
 function markSaved(name, ver) { save.dirty = save.ver !== ver; save.at = Date.now(); if (name) save.name = name; renderSaveState(); }
 function renderSaveState() {
   const el = $('#save-status'), btn = $('#btn-save'); if (!el || !btn || !P) return;
   const dirty = save.dirty && !P.example;
   let t = '';
   if (P.example) t = 'Example project';
+  else if (dirty && save.auto) t = 'Autosaving…';
   else if (dirty) t = 'Unsaved changes';
+  else if (save.auto && save.at) t = `Autosaved ${new Date(save.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} · ${save.name}`;
   else if (save.at) t = `Saved ${new Date(save.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}${save.name ? ' · ' + save.name : ''}`;
   else if (save.name) t = save.name;
   el.textContent = t; el.title = t; el.classList.toggle('dirty', dirty);
-  btn.classList.toggle('dirty', dirty);
+  btn.classList.toggle('dirty', dirty && !save.auto);
+  const ab = $('#btn-autosave'); if (ab) { ab.textContent = save.auto ? 'Autosave on' : 'Autosave off'; ab.setAttribute('aria-pressed', String(save.auto)); ab.classList.toggle('on', save.auto); ab.title = save.auto ? `Saving every change to ${save.name}. Click to turn off.` : canPick() ? 'Save every change automatically to a file you choose' : 'Autosave works when this page is opened from your disk in Chrome or Edge'; }
   btn.title = `${dirty ? 'Save your changes to a project file' : 'Save a project file'} (${MOD}S)`;
 }
 async function saveProject(saveAs) {
@@ -1028,7 +1158,7 @@ async function openLegacy() {
   if (save.dirty && !P.example) { const ok = await confirmDialog({ title: 'Replace the current project?', body: `<b>${esc(P.name)}</b> has unsaved changes. Save it first if you want to keep them.`, ok: 'Open the stored project', danger: true }); if (!ok) return; }
   unlinkAll(); turnCache.clear(); snapCache.clear(); undoStack.length = 0;
   P = normalize(legacy.data); P.example = false; legacy.opened = true;
-  ui.sessionId = P.sessions[0] ? P.sessions[0].id : null; ui.selection.clear(); ui.filterPeople.clear(); ui.filterCode = ''; ui.dismissRelink = false;
+  ui.sessionId = P.sessions[0] ? P.sessions[0].id : null; ui.selection.clear(); ui.filterPeople.clear(); ui.filterCode = ''; ui.filterRegion = ''; ui.dismissRelink = false;
   if (ui.drawerId) closeDrawer(true);
   resetSaveState(); save.dirty = true; renderSaveState(); refresh();
   toast(`Opened ${P.name}. Save it to a file before you delete the browser copy.`, { ms: 7000 });
@@ -1097,14 +1227,15 @@ function dataURLToBlob(d) {
   return new Blob([u], { type: mime });
 }
 function snapSrc(c) {
-  if (!c.snapshot) return '';
-  const e = snapCache.get(c.id);
-  if (e && e.data === c.snapshot) return e.url;
-  if (e) URL.revokeObjectURL(e.url);
-  let url; try { url = URL.createObjectURL(dataURLToBlob(c.snapshot)); } catch (err) { url = c.snapshot; }
-  snapCache.set(c.id, { data: c.snapshot, url });
-  return url;
+  return c.snapshot ? snapURL(c.snapshot) : '';
 }
+function snapURL(data) {
+  const e = snapCache.get(data); if (e) return e;
+  let url; try { url = URL.createObjectURL(dataURLToBlob(data)); } catch (err) { url = data; }
+  snapCache.set(data, url); return url;
+}
+const allSnaps = c => (c.snapshot ? [{ d: c.snapshot, t: c.snapshotTime != null ? c.snapshotTime : c.start }, ...(c.moreSnaps || [])] : []);
+function setSnaps(c, arr) { const [first, ...rest] = arr; c.snapshot = first ? first.d : null; c.snapshotTime = first ? first.t : null; c.moreSnaps = rest; }
 function grabFrame(v) {
   if (!v || !v.videoWidth || v.readyState < 2) return null;
   const w = Math.min(960, v.videoWidth), h = Math.round(v.videoHeight * w / v.videoWidth);
@@ -1372,6 +1503,7 @@ function setView(v) {
   if (!VIEWS.includes(v)) v = 'transcripts';
   if (ui.edit && ui.view === 'transcripts' && v !== 'transcripts' && !commitEdit()) { if (location.hash !== '#transcripts') { try { history.replaceState(null, '', '#transcripts'); } catch (e) { /* ignore */ } } return; }
   if (location.hash !== '#' + v) { try { history.replaceState(null, '', '#' + v); } catch (e) { location.hash = v; } }
+  if (v !== 'transcripts' && ui.regionMode) setRegionMode(null);
   ui.view = v; hideSelTool(); hidePop(); renderView(); renderHeader();
 }
 function renderView() {
@@ -1382,7 +1514,7 @@ function renderView() {
 }
 function refresh() {
   renderHeader(); renderNotices(); renderView();
-  if (ui.drawerId) { if (P.cards[ui.drawerId]) { renderDrawerMeta(); renderDrawerCodes(); renderDrawerGroup(); } else closeDrawer(true); }
+  if (ui.drawerId) { if (P.cards[ui.drawerId]) { renderDrawerMeta(); renderDrawerCodes(); renderDrawerGroup(); renderDrawerSnap(); } else closeDrawer(true); }
 }
 const refreshSoon = debounce(() => { if (ui.view === 'board') renderBoard(); else if (ui.view === 'report') renderReport(); else { const s = currentSession(); if (s) renderTranscript(s); } }, 350);
 function measureTop() { const r = $('#top').getBoundingClientRect(); document.documentElement.style.setProperty('--top-h', Math.max(0, Math.round(r.bottom)) + 'px'); }
@@ -1452,6 +1584,7 @@ function renderSessionMeta(s) {
     <ul class="speakers">${sp.map(([raw, v]) => `<li><span class="role">${v.role === 'researcher' ? 'Researcher' : 'Participant'}</span><span>${esc(v.display)}</span>${v.display !== raw ? `<span class="small muted">${esc(raw)}</span>` : ''}</li>`).join('') || '<li class="small muted">This transcript has no speaker names.</li>'}</ul>
     <p class="small muted">${plural(nq, 'quote')} and ${plural(cards.length - nq, 'observation')} from ${esc(s.label)}. <button type="button" class="link small" data-action="board-filter" data-id="${s.id}">See them on the board</button></p>
     ${txEditsLine(s)}
+    ${regionsBlock(s)}
     <p class="tips">Select words in the transcript to pull a quote. Hover a turn and click Edit to fix a typo. <kbd>K</kbd> play or pause, <kbd>J</kbd> <kbd>L</kbd> skip 5 s, <kbd>Q</kbd> pull quote, <kbd>O</kbd> observation.</p>`;
 }
 function txEditsLine(s) {
@@ -1496,6 +1629,15 @@ function renderTranscript(s) {
   }
   const q = ui.search.trim().toLowerCase(); const counter = { n: 0 };
   const parts = [];
+  const regs = regionsOf(s); const regHeadAt = new Map();
+  for (const r of regs) { let ci = s.cues.findIndex(cu => cu.s >= r.start); if (ci < 0) continue; if (ci > 0 && s.cues[ci - 1].e > r.start) ci--; const ti = ciTurn[ci]; if (!regHeadAt.has(ti)) regHeadAt.set(ti, []); regHeadAt.get(ti).push(r); }
+  const segStyle = ids => {
+    const cols = [...new Set(ids.map(id => quoteColor(P.cards[id])))];
+    const mix = n => (n ? `color-mix(in srgb, var(--k${n}) var(--qmix), var(--panel))` : 'var(--quoted)');
+    if (cols.length === 1) return cols[0] ? ` style="background:${mix(cols[0])}"` : '';
+    const step = 100 / cols.length;
+    return ` style="background:linear-gradient(to bottom,${cols.map((n, i) => `${mix(n)} ${Math.round(i * step)}% ${Math.round((i + 1) * step)}%`).join(',')})"`;
+  };
   const editing = ui.edit && ui.edit.sid === s.id ? ui.edit.ti : -1;
   turns.forEach((t, ti) => {
     let said = '';
@@ -1516,21 +1658,27 @@ function renderTranscript(s) {
           for (let k = 0; k < xs.length - 1; k++) {
             const x = xs[k], y = xs[k + 1]; if (y <= x) continue;
             const ids = rs.filter(r => r.a <= x && r.b >= y).map(r => r.id); const piece = hl(cue.t.slice(x, y), hq, counter);
-            inner += ids.length ? `<span class="qs" data-cards="${ids.join(' ')}">${piece}</span>` : piece;
+            const starts = rs.filter(r => r.a === x && i === (P.cards[r.id].ci0 == null ? i : P.cards[r.id].ci0));
+            const edge = starts.length ? ` qa" data-qa="${quoteColor(P.cards[starts[starts.length - 1].id])}` : '';
+            inner += ids.length ? `<span class="qs${edge}" data-cards="${ids.join(' ')}"${segStyle(ids)}>${piece}</span>` : piece;
           }
         }
         said += `<span class="cue${cue.o != null ? ' edited' : ''}" data-ci="${i}"${cue.o != null ? ` title="Edited. Original: ${esc(cue.o)}"` : ''}>${inner}</span>`;
         // the space between two captions is part of any quote that runs across it
         const across = i < t.to ? rs.filter(r => !r.last && r.b === cue.t.length).map(r => r.id).filter(id => (qr.get(i + 1) || []).some(r => r.id === id && r.a === 0)) : [];
-        said += across.length ? `<span class="qs" data-cards="${across.join(' ')}"> </span>` : ' ';
+        said += across.length ? `<span class="qs gap" data-cards="${across.join(' ')}"${segStyle(across)}> </span>` : ' ';
       }
       said = `<p class="said">${said}</p>`;
     }
-    const mk = (marks.get(ti) || []).map(c => `<button type="button" class="mark ${c.kind}${c.snapshot ? ' has-snap' : ''}" data-open="${c.id}" data-anchor="${c._anchor}" title="${esc(markTitle(c))}" aria-label="Open card. ${esc(markTitle(c))}"></button>`).join('');
-    parts.push(`<div class="turn${isResearcher(s, t.sp) ? ' res' : ''}${ti === editing ? ' editing' : ''}" data-ti="${ti}"><div class="gutter"><button type="button" class="tcode" data-seek="${t.s}" title="Play from ${tc(t.s)}">${tc(t.s)}</button><span class="who">${esc(speakerName(s, t.sp))}</span>${ti === editing ? '' : `<button type="button" class="ed-btn" data-edit="${ti}" aria-label="Fix typos in the captions at ${tc(t.s)}">Edit</button>`}</div>${said}<div class="marks">${mk}</div></div>`);
+    const mk = (marks.get(ti) || []).map(c => `<button type="button" class="mark ${c.kind}${c.snapshot ? ' has-snap' : ''}${quoteColor(c) ? ' coded' : ''}"${quoteColor(c) ? ` style="--mc:var(--k${quoteColor(c)})"` : ''} data-open="${c.id}" data-anchor="${c._anchor}" title="${esc(markTitle(c))}" aria-label="Open card. ${esc(markTitle(c))}"></button>`).join('');
+    for (const r of regHeadAt.get(ti) || []) parts.push(`<div class="region-head" data-region="${r.id}" style="--rc:var(--k${regionColor(r.label)})"><span class="rlabel">${esc(r.label)}</span><span class="mono">${tc(r.start)}–${tc(r.end)}</span><button type="button" class="link small" data-region-edit="${r.id}">Edit</button></div>`);
+    const inRegs = regs.filter(r => s.cues.slice(t.from, t.to + 1).some(cu => cu.s >= r.start && cu.s < r.end) || (t.s < r.start && s.cues[t.to].e > r.start));
+    const band = inRegs.length ? ` style="--rc:var(--k${regionColor(inRegs[0].label)})"` : '';
+    parts.push(`<div class="turn${isResearcher(s, t.sp) ? ' res' : ''}${ti === editing ? ' editing' : ''}${inRegs.length ? ' in-region' : ''}" data-ti="${ti}"${band}><div class="gutter"><button type="button" class="tcode" data-seek="${t.s}" title="Play from ${tc(t.s)}">${tc(t.s)}</button><span class="who">${esc(speakerName(s, t.sp))}</span>${ti === editing ? '' : `<button type="button" class="ed-btn" data-edit="${ti}" aria-label="Fix typos in the captions at ${tc(t.s)}">Edit</button>`}</div>${said}<div class="marks">${mk}</div></div>`);
   });
   const same = box.dataset.sid === s.id; const keep = scroller.scrollTop;
-  box.innerHTML = parts.join(''); box.dataset.sid = s.id;
+  box.innerHTML = parts.join('') + '<div class="qhandles" id="qhandles" aria-hidden="true"><span class="qh" data-qh="0" title="Drag to change where the quote starts"></span><span class="qh" data-qh="1" title="Drag to change where the quote ends"></span></div>';
+  box.dataset.sid = s.id; box.classList.toggle('region-mode', !!ui.regionMode);
   $$('#transcript .ed-text').forEach(autosize);
   positionMarks();
   if (!isNarrow()) scroller.scrollTop = same ? keep : 0;
@@ -1555,6 +1703,179 @@ function positionMarks() {
     for (const p of placed) { const y = Math.max(p.y, next); p.m.style.top = Math.round(y) + 'px'; next = y + 19; }
     box.style.minHeight = Math.round(next) + 'px';
   }
+  placeHandles();
+}
+/* ---------- resizing a quote by dragging its ends ---------- */
+function handleCardId() {
+  if (ui.qdrag) return ui.qdrag.id;
+  const s = currentSession(); const ok = id => { const c = id && P.cards[id]; return c && c.kind === 'quote' && c.ci0 != null && s && c.sessionId === s.id; };
+  if (ok(ui.hoverQuote)) return ui.hoverQuote;
+  if (ok(ui.drawerId) && !$('#drawer').hidden) return ui.drawerId;
+  return null;
+}
+function placeHandles() {
+  const ov = $('#qhandles'); if (!ov) return;
+  const id = ui.edit ? null : handleCardId();
+  const segs = id ? $$(`#transcript .qs[data-cards~="${id}"]:not(.gap)`) : [];
+  if (!segs.length) { ov.classList.remove('on'); return; }
+  const a = segs[0].getClientRects(), b = segs[segs.length - 1].getClientRects();
+  if (!a.length || !b.length) { ov.classList.remove('on'); return; }
+  setHandles(a[0], b[b.length - 1]); ov.dataset.card = id;
+}
+function setHandles(first, last) {
+  const ov = $('#qhandles'); const base = $('#transcript').getBoundingClientRect();
+  const [h0, h1] = $$('.qh', ov);
+  h0.style.transform = `translate(${Math.round(first.left - base.left - 6)}px, ${Math.round(first.top - base.top)}px)`; h0.style.height = Math.round(first.height) + 'px';
+  h1.style.transform = `translate(${Math.round(last.right - base.left - 6)}px, ${Math.round(last.top - base.top)}px)`; h1.style.height = Math.round(last.height) + 'px';
+  ov.classList.add('on');
+}
+function caretAt(x, y) {
+  let node, off;
+  if (document.caretPositionFromPoint) { const pp = document.caretPositionFromPoint(x, y); if (!pp) return null; node = pp.offsetNode; off = pp.offset; }
+  else if (document.caretRangeFromPoint) { const r = document.caretRangeFromPoint(x, y); if (!r) return null; node = r.startContainer; off = r.startOffset; }
+  else return null;
+  const el = (node.nodeType === 3 ? node.parentElement : node); const cue = el && el.closest && el.closest('#transcript .cue');
+  if (!cue) return null;
+  const r = document.createRange(); r.selectNodeContents(cue); try { r.setEnd(node, off); } catch (e) { return null; }
+  return { ci: +cue.dataset.ci, o: r.toString().length };
+}
+function domPos(ci, o) {
+  const cue = $(`#transcript .cue[data-ci="${ci}"]`); if (!cue) return null;
+  const w = document.createTreeWalker(cue, NodeFilter.SHOW_TEXT); let n, left = o, lastN = null;
+  while ((n = w.nextNode())) { if (left <= n.length) return { n, o: left }; left -= n.length; lastN = n; }
+  return lastN ? { n: lastN, o: lastN.length } : { n: cue, o: 0 };
+}
+function snapWord(t, o, isEnd) {
+  o = clamp(o, 0, t.length);
+  if (isEnd) { while (o < t.length && /\S/.test(t[o]) && o > 0 && /\S/.test(t[o - 1])) o++; while (o > 0 && /\s/.test(t[o - 1])) o--; }
+  else { while (o > 0 && /\S/.test(t[o - 1]) && o < t.length && /\S/.test(t[o])) o--; while (o < t.length && /\s/.test(t[o])) o++; }
+  return o;
+}
+function quoteSlice(s, ci0, o0, ci1, o1) {
+  const out = []; for (let i = ci0; i <= ci1; i++) { const t = s.cues[i].t; out.push(t.slice(i === ci0 ? o0 : 0, i === ci1 ? o1 : t.length)); }
+  return out.join(' ').replace(/\s+/g, ' ').trim();
+}
+function quoteBounds(c, s) { return { ci0: c.ci0, o0: c.o0 == null ? 0 : c.o0, ci1: c.ci1 == null ? c.ci0 : c.ci1, o1: c.o1 == null ? s.cues[c.ci1 == null ? c.ci0 : c.ci1].t.length : c.o1 }; }
+function startQuoteDrag(e, which) {
+  const id = handleCardId(); const c = id && P.cards[id]; const s = currentSession(); if (!c || !s) return;
+  e.preventDefault(); e.stopPropagation(); getSelection().removeAllRanges(); hideSelTool();
+  ui.qdrag = { id, which, sid: s.id, b: quoteBounds(c, s) };
+  $('#qhandles').classList.add('dragging'); document.body.classList.add('qdragging');
+  const scroller = $('#tx-scroll');
+  const move = ev => {
+    const d = ui.qdrag; if (!d) return;
+    const sr = scroller.getBoundingClientRect();
+    if (!isNarrow()) { if (ev.clientY < sr.top + 36) scroller.scrollTop -= 14; else if (ev.clientY > sr.bottom - 36) scroller.scrollTop += 14; }
+    const hit = caretAt(ev.clientX, ev.clientY); if (!hit) return;
+    const t = s.cues[hit.ci].t; const o = snapWord(t, hit.o, d.which === 1); const nb = Object.assign({}, d.b);
+    if (d.which === 0) { nb.ci0 = hit.ci; nb.o0 = o; } else { nb.ci1 = hit.ci; nb.o1 = o; }
+    if (nb.ci0 > nb.ci1 || (nb.ci0 === nb.ci1 && nb.o1 - nb.o0 < 2)) return;
+    if (!quoteSlice(s, nb.ci0, nb.o0, nb.ci1, nb.o1)) return;
+    d.b = nb; d.moved = true; previewQuote(nb);
+  };
+  const up = () => {
+    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+    const d = ui.qdrag; ui.qdrag = null; document.body.classList.remove('qdragging');
+    const ov = $('#qhandles'); if (ov) { ov.classList.remove('dragging'); $$('.qprev', ov).forEach(n => n.remove()); }
+    if (d && d.moved) commitQuoteBounds(d); else placeHandles();
+  };
+  window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+}
+function previewQuote(b) {
+  const ov = $('#qhandles'); const p0 = domPos(b.ci0, b.o0), p1 = domPos(b.ci1, b.o1); if (!p0 || !p1) return;
+  const r = document.createRange(); try { r.setStart(p0.n, p0.o); r.setEnd(p1.n, p1.o); } catch (e) { return; }
+  const base = $('#transcript').getBoundingClientRect();
+  $$('.qprev', ov).forEach(n => n.remove());
+  const rects = [...r.getClientRects()].filter(x => x.width > 0.5);
+  for (const x of rects) { const d = document.createElement('span'); d.className = 'qprev'; d.style.cssText = `transform:translate(${Math.round(x.left - base.left)}px,${Math.round(x.top - base.top)}px);width:${Math.round(x.width)}px;height:${Math.round(x.height)}px`; ov.appendChild(d); }
+  if (rects.length) setHandles(rects[0], rects[rects.length - 1]);
+}
+function commitQuoteBounds(d) {
+  const c = P.cards[d.id]; const s = sessionById(d.sid); if (!c || !s) return;
+  const b = d.b; const old = quoteBounds(c, s);
+  if (old.ci0 === b.ci0 && old.o0 === b.o0 && old.ci1 === b.ci1 && old.o1 === b.o1) { placeHandles(); return; }
+  const handEdited = c.text !== quoteSlice(s, old.ci0, old.o0, old.ci1, old.o1);
+  pushUndo('Resize quote', { sid: s.id, cues: [], cards: [{ id: c.id, text: c.text, o0: c.o0, o1: c.o1, ci0: c.ci0, ci1: c.ci1, start: c.start, end: c.end, speaker: c.speaker }] });
+  Object.assign(c, b, { text: quoteSlice(s, b.ci0, b.o0, b.ci1, b.o1), start: s.cues[b.ci0].s, end: s.cues[b.ci1].e });
+  for (let i = b.ci0; i <= b.ci1; i++) if (!isResearcher(s, s.cues[i].sp)) { c.speaker = s.cues[i].sp; break; }
+  changed(); renderTranscript(s);
+  if (ui.drawerId === c.id) { const t = $('#d-text'); t.value = c.text; autosize(t); renderDrawerMeta(); }
+  toast(handEdited ? 'Quote resized. Its text now matches the transcript, so your edits to the quote were replaced.' : 'Quote resized', { action: 'Undo', onAction: undo, ms: handEdited ? 8000 : 4000 });
+}
+
+/* ---------- regions ---------- */
+function setRegionMode(m) {
+  ui.regionMode = m; const bar = $('#region-bar'); const s = currentSession();
+  $('#transcript').classList.toggle('region-mode', !!m);
+  $('#btn-region').setAttribute('aria-pressed', String(!!m));
+  if (!m) { bar.hidden = true; bar.innerHTML = ''; return; }
+  const v = $('#player'); const hasV = s && media[s.id];
+  bar.hidden = false;
+  bar.innerHTML = m.step === 1
+    ? `<b>Region start.</b> <span>Click the caption where the region starts, or select words.</span>${hasV ? `<button type="button" class="btn sm" data-rg="time">Start at video time <span class="mono">${tc(v.currentTime)}</span></button>` : ''}<button type="button" class="btn sm ghost" data-rg="cancel">Cancel</button>`
+    : `<b>Region end.</b> <span>Starts at <span class="mono">${tc(m.start)}</span>. Click the caption where it ends, or select words.</span>${hasV ? `<button type="button" class="btn sm" data-rg="time">End at video time <span class="mono">${tc(v.currentTime)}</span></button>` : ''}<button type="button" class="btn sm ghost" data-rg="cancel">Cancel</button>`;
+}
+function regionPoint(t, isEnd) {
+  const m = ui.regionMode; if (!m) return;
+  if (m.step === 1) { setRegionMode({ step: 2, start: t }); return; }
+  let a = m.start, b = t; if (b < a) { const x = a; a = b; b = x; }
+  if (b - a < 0.5) b = a + 0.5;
+  setRegionMode(null); openRegionDialog({ start: a, end: b });
+}
+function regionFromCueEls(els, isEnd) {
+  const s = currentSession(); if (!s || !els.length) return;
+  const ci0 = +els[0].dataset.ci, ci1 = +els[els.length - 1].dataset.ci;
+  const st = ui.regionMode && ui.regionMode.step === 2;
+  regionPoint(st ? s.cues[ci1].e : s.cues[ci0].s);
+}
+function openRegionDialog(o) {
+  const s = currentSession(); if (!s) return;
+  const existing = o.id ? regionsOf(s).find(r => r.id === o.id) : null;
+  const d = $('#dlg-region'); const labels = allRegionLabels();
+  d.innerHTML = `<form method="dialog"><div class="dlg-head"><h2>${existing ? 'Edit region' : 'Label this region'}</h2><p>${esc(s.label)} · <span class="mono">${tc(o.start)}–${tc(o.end)}</span></p></div>
+    <div class="dlg-body region-form">
+      <label class="field-label" for="rg-label">Label</label>
+      <input type="text" id="rg-label" maxlength="60" autocomplete="off" value="${esc(existing ? existing.label : '')}" placeholder="For example Intro, Task 1, Wrap-up">
+      ${labels.length ? `<div class="rg-chips" role="group" aria-label="Labels already used">${labels.map(l => `<button type="button" class="rg-chip" data-label="${esc(l)}" style="--rc:var(--k${regionColor(l)})">${esc(l)}</button>`).join('')}</div>` : ''}
+      <div class="rg-times"><label><span class="field-label">Starts</span><input type="text" id="rg-start" class="mono" value="${tc(o.start)}" inputmode="numeric"></label><label><span class="field-label">Ends</span><input type="text" id="rg-end" class="mono" value="${tc(o.end)}" inputmode="numeric"></label></div>
+      <p class="small muted" id="rg-err" role="alert"></p>
+    </div>
+    <div class="dlg-foot">${existing ? '<button type="button" class="btn danger" id="rg-del">Delete region</button><span class="spacer"></span>' : ''}<button type="button" class="btn" id="rg-cancel">Cancel</button><button value="ok" class="btn primary" id="rg-ok">${existing ? 'Save' : 'Add region'}</button></div></form>`;
+  const input = $('#rg-label', d);
+  $$('.rg-chip', d).forEach(b => b.addEventListener('click', () => { input.value = b.dataset.label; input.focus(); }));
+  $('#rg-cancel', d).addEventListener('click', () => d.close('cancel'));
+  if (existing) $('#rg-del', d).addEventListener('click', () => { pushUndo('Delete region'); s.regions = regionsOf(s).filter(r => r.id !== existing.id); d.close('cancel'); changed(); afterRegionChange(s); toast(`Deleted region ${existing.label}`, { action: 'Undo', onAction: undo }); });
+  $('form', d).addEventListener('submit', e => {
+    const label = input.value.trim().replace(/\s+/g, ' '); const a = parseTc($('#rg-start', d).value), b = parseTc($('#rg-end', d).value);
+    const err = $('#rg-err', d);
+    if (!label) { e.preventDefault(); err.textContent = 'Give the region a label.'; input.focus(); return; }
+    if (a == null || b == null || b <= a) { e.preventDefault(); err.textContent = 'Use times like 00:12:30, with the end after the start.'; return; }
+    const known = labels.find(l => l.toLowerCase() === label.toLowerCase()) || label;
+    pushUndo(existing ? 'Edit region' : 'Add region');
+    if (existing) Object.assign(existing, { label: known, start: a, end: b });
+    else { if (!s.regions) s.regions = []; s.regions.push({ id: uid('r'), label: known, start: a, end: b }); }
+    s.regions.sort((x, y) => x.start - y.start);
+    changed(); afterRegionChange(s);
+  });
+  d.returnValue = ''; d.showModal(); input.focus(); input.select();
+}
+function afterRegionChange(s) { renderTranscript(s); renderSessionMeta(s); if (ui.view !== 'transcripts') refreshSoon(); }
+function parseTc(v) {
+  const m = /^\s*(?:(\d{1,3}):)?(\d{1,2}):(\d{1,2})(?:[.,](\d+))?\s*$/.exec(String(v || ''));
+  if (m) return (+(m[1] || 0)) * 3600 + (+m[2]) * 60 + (+m[3]) + (m[4] ? +('0.' + m[4]) : 0);
+  const n = Number(String(v).trim()); return String(v).trim() !== '' && Number.isFinite(n) && n >= 0 ? n : null;
+}
+function regionsBlock(s) {
+  const rs = regionsOf(s);
+  return `<div class="side-head"><h2 class="eyebrow">Regions</h2><button type="button" class="link small" data-action="region-start">Mark a region</button></div>
+    ${rs.length ? `<ul class="regions">${rs.map(r => `<li style="--rc:var(--k${regionColor(r.label)})"><i class="rdot"></i><button type="button" class="link" data-region-go="${r.id}" title="Go to ${esc(r.label)}">${esc(r.label)}</button><span class="mono small muted">${tc(r.start)}–${tc(r.end)}</span><button type="button" class="link small" data-region-edit="${r.id}">Edit</button></li>`).join('')}</ul>`
+      : '<p class="small muted">Label parts of the session, such as the intro or each task. Cards show the region they came from, and the board can filter by it.</p>'}`;
+}
+function goRegion(id) {
+  const s = currentSession(); const r = regionsOf(s).find(x => x.id === id); if (!r) return;
+  const head = $(`#transcript .region-head[data-region="${id}"]`);
+  if (head) head.scrollIntoView({ block: 'start', behavior: reduceMotion() ? 'auto' : 'smooth' });
+  const v = $('#player'); if (s && media[s.id] && v.getAttribute('src')) { try { v.currentTime = r.start; } catch (e) { /* not seekable */ } }
 }
 function updateSearchCount() {
   const q = ui.search.trim();
@@ -1571,7 +1892,7 @@ function goHit(dir) {
 function selectSession(id) {
   if (ui.sessionId === id) return;
   if (ui.edit && !commitEdit()) return;
-  ui.sessionId = id; ui.nowCue = -1; ui.hitIdx = -1;
+  ui.sessionId = id; ui.nowCue = -1; ui.hitIdx = -1; if (ui.regionMode) setRegionMode(null);
   renderTranscriptsView();
 }
 function onPlayerTime() {
@@ -1628,7 +1949,8 @@ function updateSelTool() {
   const last = rects.length ? rects[rects.length - 1] : rect;
   const t = $('#seltool');
   const rec = ui.recentCodes.filter(id => codeById(id)).slice(0, 3);
-  t.innerHTML = `<button type="button" class="st-btn primary" data-st="pull">Pull quote <kbd>Q</kbd></button>${rec.map(id => { const k = codeById(id); return `<button type="button" class="st-btn" data-st="pull" data-code="${id}" title="Pull and code as ${esc(k.name)}"><i class="dot" style="--k:var(--k${k.color})"></i>${esc(trunc(k.name, 22))}</button>`; }).join('')}`;
+  if (ui.regionMode) { hideSelTool(); return; }
+  t.innerHTML = `<button type="button" class="st-btn primary" data-st="pull">Pull quote <kbd>Q</kbd></button><button type="button" class="st-btn" data-st="region" title="Label the selected captions as a region">Region…</button>${rec.map(id => { const k = codeById(id); return `<button type="button" class="st-btn" data-st="pull" data-code="${id}" title="Pull and code as ${esc(k.name)}"><i class="dot" style="--k:var(--k${k.color})"></i>${esc(trunc(k.name, 22))}</button>`; }).join('')}`;
   t.hidden = false;
   const w = t.offsetWidth, h = t.offsetHeight;
   const coarse = matchMedia('(pointer: coarse)').matches;
@@ -1807,7 +2129,7 @@ function openDrawer(id, focus) {
   hidePop(); hideSelTool();
   ui.drawerId = id;
   $('#drawer').hidden = false; document.body.classList.add('drawer-open'); measureTop();
-  renderDrawer();
+  renderDrawer(); if (ui.view === 'transcripts') placeHandles();
   if (ui.view === 'board') $$('#view-board .card').forEach(el => el.classList.toggle('open', el.dataset.card === id));
   const coarse = matchMedia('(pointer: coarse)').matches;
   if (focus === 'codes' && !coarse) $('#d-code-input').focus({ preventScroll: true });
@@ -1816,7 +2138,7 @@ function openDrawer(id, focus) {
 }
 function closeDrawer(silent) {
   const d = $('#dvideo'); d.pause();
-  ui.drawerId = null; $('#drawer').hidden = true; document.body.classList.remove('drawer-open');
+  ui.drawerId = null; $('#drawer').hidden = true; document.body.classList.remove('drawer-open'); placeHandles();
   if (!silent) refreshSoon();
 }
 function renderDrawer() {
@@ -1852,15 +2174,49 @@ function renderDrawerMeta() {
   $('#d-meta').innerHTML = `<span class="pid">${esc(s ? s.label : '?')}</span><button type="button" class="tlink" id="d-seek" title="Play from here">${range}</button><span class="d-kind">${c.kind === 'quote' ? (res ? 'Researcher quote' : 'Quote') : 'Observation'}</span>`;
 }
 function renderDrawerSnap() {
-  const c = P.cards[ui.drawerId]; const fig = $('#d-snap');
-  if (!c || !c.snapshot) { fig.hidden = true; $('#d-snap-img').removeAttribute('src'); return; }
-  fig.hidden = false; $('#d-snap-img').src = snapSrc(c); $('#d-snap-time').textContent = tc(c.snapshotTime != null ? c.snapshotTime : c.start);
-  const s = sessionById(c.sessionId); $('#d-snap-img').alt = `Video frame from ${s ? s.label : 'the session'} at ${tc(c.snapshotTime || c.start)}`;
+  const c = P.cards[ui.drawerId]; const box = $('#d-snaps');
+  const snaps = c ? allSnaps(c) : [];
+  $('#d-grab').textContent = snaps.length ? 'Add this frame' : 'Grab this frame';
+  if (!snaps.length) { box.hidden = true; box.innerHTML = ''; return; }
+  const s = sessionById(c.sessionId);
+  box.hidden = false;
+  box.innerHTML = `<div class="field-row"><span class="field-label">${plural(snaps.length, 'snapshot')}</span>${snaps.length > 1 ? '<span class="small muted">The first one shows on the board</span>' : ''}</div><div class="snap-grid">${snaps.map((x, i) => `<figure class="snap${i === 0 ? ' main' : ''}"><img src="${snapURL(x.d)}" alt="Video frame from ${esc(s ? s.label : 'the session')} at ${tc(x.t)}"><figcaption><button type="button" class="tlink" data-snap-seek="${i}" title="Show this moment">${tc(x.t)}</button>${i ? `<button type="button" class="link small" data-snap-main="${i}">Show on board</button>` : '<span class="small muted">On board</span>'}<button type="button" class="link small danger-link" data-snap-del="${i}">Remove</button></figcaption></figure>`).join('')}</div>`;
 }
 function renderDrawerCodes() {
   const c = P.cards[ui.drawerId]; if (!c) return;
   $('#d-codes').innerHTML = P.codes.length ? P.codes.map((k, i) => `<button type="button" class="ktoggle" data-k="${k.id}" aria-pressed="${c.tags.includes(k.id)}"><i class="dot" style="--k:var(--k${k.color})"></i>${esc(k.name)}${i < 9 ? `<kbd>${i + 1}</kbd>` : ''}</button>`).join('') : '<span class="small muted">No codes yet. Type one below.</span>';
-  $('#code-datalist').innerHTML = P.codes.map(k => `<option value="${esc(k.name)}"></option>`).join('');
+  renderCodeSuggest();
+}
+/* Typing in the code box lists existing codes that contain the text; "Create" appears only when no code has that exact name. */
+function codeSuggestions() {
+  const c = P.cards[ui.drawerId]; const q = ($('#d-code-input').value || '').trim().replace(/\s+/g, ' ');
+  if (!c || !q) return [];
+  const lq = q.toLowerCase();
+  const hits = P.codes.filter(k => k.name.toLowerCase().includes(lq)).sort((a, b) => (a.name.toLowerCase().indexOf(lq) - b.name.toLowerCase().indexOf(lq)) || a.name.length - b.name.length);
+  const items = hits.map(k => ({ k, applied: c.tags.includes(k.id) }));
+  if (!P.codes.some(k => k.name.toLowerCase() === lq)) items.push({ create: q });
+  return items;
+}
+function renderCodeSuggest() {
+  const ul = $('#d-code-list'), input = $('#d-code-input'); if (!ul) return;
+  const items = codeSuggestions(); ui.codeItems = items;
+  if (!items.length || document.activeElement !== input) { ul.hidden = true; ul.innerHTML = ''; input.setAttribute('aria-expanded', 'false'); return; }
+  if (ui.codeActive == null || ui.codeActive >= items.length) ui.codeActive = 0;
+  const q = input.value.trim().toLowerCase();
+  const mark = name => { const i = name.toLowerCase().indexOf(q); return i < 0 ? esc(name) : esc(name.slice(0, i)) + '<b>' + esc(name.slice(i, i + q.length)) + '</b>' + esc(name.slice(i + q.length)); };
+  ul.innerHTML = items.map((it, i) => it.create
+    ? `<li role="option" id="cs-${i}" data-ci="${i}" class="create${i === ui.codeActive ? ' active' : ''}" aria-selected="${i === ui.codeActive}"><span>Create new code</span> <b>“${esc(it.create)}”</b></li>`
+    : `<li role="option" id="cs-${i}" data-ci="${i}" class="${i === ui.codeActive ? 'active' : ''}" aria-selected="${i === ui.codeActive}"><i class="dot" style="--k:var(--k${it.k.color})"></i><span>${mark(it.k.name)}</span><span class="hint">${it.applied ? 'Applied · remove' : 'Apply'}</span></li>`).join('');
+  const wasHidden = ul.hidden; ul.hidden = false; input.setAttribute('aria-expanded', 'true'); input.setAttribute('aria-activedescendant', 'cs-' + ui.codeActive);
+  if (wasHidden) ul.scrollIntoView({ block: 'nearest' });
+  const a = ul.querySelector('li.active'); if (a) a.scrollIntoView({ block: 'nearest' });
+}
+function chooseCodeItem(i) {
+  const c = P.cards[ui.drawerId]; const it = (ui.codeItems || [])[i]; const input = $('#d-code-input'); if (!c || !it) return;
+  if (it.create) { const k = ensureCode(it.create); pushUndo('Add code'); c.tags.push(k.id); bumpRecent(k.id); toast(`Created and applied ${k.name}`); }
+  else if (it.applied) { pushUndo('Change codes'); c.tags = c.tags.filter(t => t !== it.k.id); }
+  else { pushUndo('Add code'); c.tags.push(it.k.id); bumpRecent(it.k.id); }
+  input.value = ''; ui.codeActive = 0; changed(); renderDrawerCodes(); refreshSoon(); input.focus();
 }
 function renderDrawerGroup() {
   const c = P.cards[ui.drawerId]; if (!c) return; const g = groupOfCard(c.id);
@@ -1877,12 +2233,7 @@ function toggleCode(c, kid) {
   const i = c.tags.indexOf(kid); if (i >= 0) c.tags.splice(i, 1); else { c.tags.push(kid); bumpRecent(kid); }
   changed(); renderDrawerCodes(); refreshSoon();
 }
-function addCodeFromInput() {
-  const c = P.cards[ui.drawerId]; const input = $('#d-code-input');
-  const k = ensureCode(input.value); if (!c || !k) return;
-  if (!c.tags.includes(k.id)) { pushUndo('Add code'); c.tags.push(k.id); }
-  bumpRecent(k.id); input.value = ''; changed(); renderDrawerCodes(); refreshSoon();
-}
+function addCodeFromInput() { const items = codeSuggestions(); if (items.length) { ui.codeItems = items; chooseCodeItem(ui.codeActive || 0); } }
 function autosize(el) { if (!el) return; el.style.height = 'auto'; el.style.height = Math.max(el.scrollHeight + 2, 28) + 'px'; }
 
 /* ---------- board: an endless whiteboard ---------- */
@@ -2019,19 +2370,55 @@ function viewCenter() {
 }
 
 /* filters, cards, frames */
-function filtersActive() { return !!(ui.boardSearch.trim() || ui.filterPeople.size || ui.filterCode); }
+function filtersActive() { return !!(ui.boardSearch.trim() || ui.filterPeople.size || ui.filterCode || ui.filterRegion); }
 function cardMatches(c) {
   if (ui.filterPeople.size && !ui.filterPeople.has(c.sessionId)) return false;
   if (ui.filterCode === '__none') { if (c.tags.length) return false; } else if (ui.filterCode && !c.tags.includes(ui.filterCode)) return false;
-  const q = ui.boardSearch.trim().toLowerCase(); if (q && !`${c.text} ${c.note}`.toLowerCase().includes(q)) return false;
+  if (ui.filterRegion && !cardRegions(c).some(r => r.label.toLowerCase() === ui.filterRegion)) return false;
+  const q = ui.boardSearch.trim().toLowerCase(); if (q && !searchText(c).includes(q)) return false;
   return true;
+}
+/* Everything the board search looks through: the words, the note, code names and region labels, as partial words. */
+function searchText(c) { return `${c.text}\n${c.note}\n${c.tags.map(codeName).join('\n')}\n${cardRegions(c).map(r => r.label).join('\n')}`.toLowerCase(); }
+function markHits(text) {
+  const q = ui.boardSearch.trim().toLowerCase(); if (!q) return esc(text);
+  const lower = text.toLowerCase(); let i = 0, out = '', k;
+  while ((k = lower.indexOf(q, i)) !== -1) { out += esc(text.slice(i, k)) + `<mark class="bhit">${esc(text.slice(k, k + q.length))}</mark>`; i = k + q.length; }
+  return out + esc(text.slice(i));
+}
+function boardHits() {
+  if (!ui.boardSearch.trim()) return [];
+  const all = Object.values(P.cards).filter(cardMatches);
+  const on = all.filter(onBoard).sort(reading), off = all.filter(c => !onBoard(c));
+  return [...on, ...off].map(c => c.id);
+}
+function updateBoardCount() {
+  const el = $('#board-search-count'); if (!el) return;
+  const hits = boardHits(); ui.boardHitIdx = Math.min(ui.boardHitIdx == null ? -1 : ui.boardHitIdx, hits.length - 1);
+  el.textContent = ui.boardSearch.trim() ? (hits.length ? `${ui.boardHitIdx >= 0 ? ui.boardHitIdx + 1 : 0}/${hits.length}` : 'None') : '';
+}
+function goBoardHit(dir) {
+  const hits = boardHits(); if (!hits.length) return;
+  const cur = ui.boardHitIdx == null ? -1 : ui.boardHitIdx;
+  ui.boardHitIdx = cur < 0 ? (dir > 0 ? 0 : hits.length - 1) : (cur + dir + hits.length) % hits.length;
+  const id = hits[ui.boardHitIdx]; const c = P.cards[id];
+  $$('.card.cur').forEach(el => el.classList.remove('cur'));
+  $$(`.card[data-card="${id}"]`).forEach(el => el.classList.add('cur'));
+  if (onBoard(c)) {
+    const cv = canvasEl().getBoundingClientRect(); const r = cardRect(c);
+    const z = Math.max(ui.cam.z, 0.7);
+    ui.cam = { x: cv.width / 2 - (r.x + r.w / 2) * z, y: cv.height / 2 - (r.y + r.h / 2) * z, z }; ui.camMoved = true; applyCam();
+  } else { const el = $(`#unsorted-cards .card[data-card="${id}"]`); if (el) el.scrollIntoView({ block: 'center', behavior: reduceMotion() ? 'auto' : 'smooth' }); }
+  updateBoardCount();
 }
 function cardHTML(c, placed) {
   const s = sessionById(c.sessionId); const res = isResearcher(s, c.speaker);
-  const cls = ['card', c.kind, placed ? 'on-board' : '', filtersActive() && !cardMatches(c) ? 'dim' : '', ui.selection.has(c.id) ? 'sel' : '', ui.drawerId === c.id ? 'open' : ''].filter(Boolean).join(' ');
+  const searching = !!ui.boardSearch.trim(); const match = cardMatches(c);
+  const cls = ['card', c.kind, placed ? 'on-board' : '', filtersActive() && !match ? 'dim' : '', searching && match ? 'hit' : '', ui.selection.has(c.id) ? 'sel' : '', ui.drawerId === c.id ? 'open' : ''].filter(Boolean).join(' ');
+  const regs = cardRegions(c);
   const label = `${c.kind === 'quote' ? 'Quote' : 'Observation'} from ${s ? s.label : ''} at ${tc(c.start)}`;
   const pos = placed ? ` style="left:${Math.round(c.x)}px;top:${Math.round(c.y)}px"` : '';
-  return `<div class="${cls}" data-card="${c.id}"${pos} tabindex="0" role="button" aria-label="${esc(label)}">${ui.thumbs && c.snapshot ? `<img class="thumb" src="${snapSrc(c)}" alt="" draggable="false">` : ''}<div class="cmeta"><span class="pid">${esc(s ? s.label : '?')}</span>${res ? '<span>Researcher</span>' : ''}<span>${tc(c.start)}</span>${c.kind === 'obs' ? '<span class="kind">Observed</span>' : ''}</div><p class="ctext">${c.text ? esc(c.text) : '<span class="empty">No text yet</span>'}</p>${c.note ? `<p class="cnote">${esc(c.note)}</p>` : ''}${c.tags.length ? `<div class="ctags">${c.tags.map(t => { const k = codeById(t); return k ? `<span class="ktag"><i class="dot" style="--k:var(--k${k.color})"></i>${esc(k.name)}</span>` : ''; }).join('')}</div>` : ''}</div>`;
+  return `<div class="${cls}" data-card="${c.id}"${pos} tabindex="0" role="button" aria-label="${esc(label)}">${ui.thumbs && c.snapshot ? `<div class="thumbwrap"><img class="thumb" src="${snapSrc(c)}" alt="" draggable="false">${c.moreSnaps.length ? `<span class="snapcount">+${c.moreSnaps.length}</span>` : ''}</div>` : ''}<div class="cmeta"><span class="pid">${esc(s ? s.label : '?')}</span>${res ? '<span>Researcher</span>' : ''}<span>${tc(c.start)}</span>${c.kind === 'obs' ? '<span class="kind">Observed</span>' : ''}</div><p class="ctext">${c.text ? markHits(c.text) : '<span class="empty">No text yet</span>'}</p>${c.note ? `<p class="cnote">${markHits(c.note)}</p>` : ''}${c.tags.length || regs.length ? `<div class="ctags">${regs.map(r => `<span class="rtag" style="--rc:var(--k${regionColor(r.label)})">${markHits(r.label)}</span>`).join('')}${c.tags.map(t => { const k = codeById(t); return k ? `<span class="ktag"><i class="dot" style="--k:var(--k${k.color})"></i>${markHits(k.name)}</span>` : ''; }).join('')}</div>` : ''}</div>`;
 }
 function peopleIn(ids) { return [...new Set(ids.map(id => { const c = P.cards[id]; const s = c && sessionById(c.sessionId); return s ? s.label : null; }).filter(Boolean))].sort(natCmp); }
 const box = f => `left:${Math.round(f.x)}px;top:${Math.round(f.y)}px;width:${Math.round(f.w)}px;height:${Math.round(f.h)}px`;
@@ -2051,6 +2438,11 @@ function renderBoardFilters() {
   sel.innerHTML = `<option value="">All codes</option>${P.codes.map(k => `<option value="${k.id}">${esc(k.name)} (${counts[k.id] || 0})</option>`).join('')}<option value="__none">No code yet (${none})</option>`;
   if (ui.filterCode && ui.filterCode !== '__none' && !codeById(ui.filterCode)) ui.filterCode = '';
   sel.value = ui.filterCode;
+  const labels = allRegionLabels(); const rsel = $('#filter-region');
+  rsel.hidden = !labels.length;
+  rsel.innerHTML = `<option value="">All regions</option>${labels.map(l => `<option value="${esc(l.toLowerCase())}">${esc(l)}</option>`).join('')}`;
+  if (ui.filterRegion && !labels.some(l => l.toLowerCase() === ui.filterRegion)) ui.filterRegion = '';
+  rsel.value = ui.filterRegion;
   $('#toggle-thumbs').checked = ui.thumbs;
 }
 function renderBoard() {
@@ -2080,6 +2472,7 @@ function renderBoard() {
   $$('#world .frame').forEach(el => ui.labelH.set(el.dataset.gframe || el.dataset.tframe, el.querySelector('.flabel').offsetHeight));
   $('#board-empty').hidden = !!contentBox();
   if (ui.camFor !== P.id) { if (fitView()) { ui.camFor = P.id; ui.camMoved = false; } } else applyCam();
+  updateBoardCount();
   renderSelBar();
   const focus = (id, pre) => { const el = $('#' + pre + id); if (el) el.focus({ preventScroll: true }); };
   if (ui.focusGroup) { focus(ui.focusGroup, 'gt-'); ui.focusGroup = null; }
@@ -2355,10 +2748,11 @@ function reportSections() {
 function countByPerson(ids) { const o = {}; ids.forEach(id => { const c = P.cards[id]; if (c) o[c.sessionId] = (o[c.sessionId] || 0) + 1; }); return o; }
 function cardReportHTML(c, forExport, compact) {
   const s = sessionById(c.sessionId); const who = s ? speakerName(s, c.speaker) : '';
-  const img = c.snapshot && !compact ? `<img class="r-snap" src="${forExport ? c.snapshot : snapSrc(c)}" alt="Video frame from ${esc(s ? s.label : '')} at ${tc(c.snapshotTime != null ? c.snapshotTime : c.start)}">` : '';
+  const snaps = compact ? [] : allSnaps(c);
+  const img = snaps.length ? `<div class="r-snaps">${snaps.map((x, i) => `<img class="r-snap${i ? ' extra' : ''}" src="${forExport ? x.d : snapURL(x.d)}" alt="Video frame from ${esc(s ? s.label : '')} at ${tc(x.t)}">`).join('')}</div>` : '';
   const body = c.kind === 'quote' ? `<blockquote class="r-quote">“${esc(c.text)}”</blockquote>` : `<p class="r-obs"><span class="r-obs-label">Observed</span>${esc(c.text)}</p>`;
   const codes = c.tags.map(codeName).filter(Boolean);
-  return `<figure class="r-card${img ? ' has-snap' : ''}">${img}<div>${body}<figcaption class="r-cite"><span class="mono">${esc(who || (s ? s.label : ''))}</span> · <span class="mono">${tc(c.start)}</span>${codes.length ? ' · ' + esc(codes.join(', ')) : ''}</figcaption>${c.note ? `<p class="r-note">${esc(c.note)}</p>` : ''}</div></figure>`;
+  return `<figure class="r-card${img ? ' has-snap' : ''}">${img}<div>${body}<figcaption class="r-cite"><span class="mono">${esc(who || (s ? s.label : ''))}</span> · <span class="mono">${tc(c.start)}</span>${cardRegions(c).map(r => ' · ' + esc(r.label)).join('')}${codes.length ? ' · ' + esc(codes.join(', ')) : ''}</figcaption>${c.note ? `<p class="r-note">${esc(c.note)}</p>` : ''}</div></figure>`;
 }
 function reportBody(forExport) {
   const secs = reportSections(); const people = P.sessions;
@@ -2407,7 +2801,7 @@ h1{margin:4px 0 6px;font-size:32px;line-height:1.12;font-stretch:80%}.r-meta{mar
 .r-group{display:flex;flex-direction:column;gap:10px}.r-glabel{align-self:flex-start;margin:0;background:#cfe3f8;border:1px solid #9fc1e6;color:#0e2645;padding:6px 12px;font-size:16.5px;line-height:1.3}
 .r-who{margin:0;font-size:12.5px;color:#545e6e}.r-card{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:0;padding:2px 0 2px 14px;border-left:2px solid #e0cb62}
 .r-card.has-snap{grid-template-columns:168px minmax(0,1fr)}@media (max-width:700px){.r-card.has-snap{grid-template-columns:minmax(0,1fr)}}
-.r-snap{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px}.r-quote{margin:0;font-family:"IBM Plex Serif",Georgia,serif;font-size:17px;line-height:1.5}
+.r-snap{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px}.r-snaps{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start}.r-snaps .r-snap:first-child{grid-column:1/-1}.r-quote{margin:0;font-family:"IBM Plex Serif",Georgia,serif;font-size:17px;line-height:1.5}
 .r-obs{margin:0;font-style:italic}.r-obs-label{font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#545e6e;margin-right:6px}
 .r-cite{font-size:12px;color:#545e6e;margin-top:4px}.r-note{margin:4px 0 0;font-size:13px;color:#545e6e}.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
 .table-wrap{overflow-x:auto}table{border-collapse:collapse;font-size:13px;min-width:100%}th,td{padding:6px 10px;border-bottom:1px solid #e4e7eb;text-align:center;white-space:nowrap}
@@ -2431,11 +2825,11 @@ function exportRows() {
       'Sticky note': c.kind === 'quote' ? `“${c.text}” (${label} ${tc(c.start)})` : `Observed: ${c.text} (${label} ${tc(c.start)})`,
       'Participant': label, 'Speaker': s ? speakerName(s, c.speaker) : '', 'Type': c.kind === 'quote' ? 'Quote' : 'Observation',
       'Start': tc(c.start), 'End': tc(c.end), 'Text': c.text, 'Note': c.note || '', 'Codes': c.tags.map(codeName).filter(Boolean).join('; '),
-      'Group': pl.group, 'Theme': pl.theme, 'Has snapshot': c.snapshot ? 'Yes' : '',
+      'Group': pl.group, 'Theme': pl.theme, 'Region': cardRegions(c).map(r => r.label).join('; '), 'Snapshots': allSnaps(c).length || '',
     };
   });
 }
-const EXPORT_COLS = ['Sticky note', 'Participant', 'Speaker', 'Type', 'Start', 'End', 'Text', 'Note', 'Codes', 'Group', 'Theme', 'Has snapshot'];
+const EXPORT_COLS = ['Sticky note', 'Participant', 'Speaker', 'Type', 'Start', 'End', 'Text', 'Note', 'Codes', 'Region', 'Group', 'Theme', 'Snapshots'];
 /* A cell that starts with = + - @ can run as a formula in Excel or Sheets, so it gets a leading apostrophe. */
 const cell = v => { v = String(v == null ? '' : v); return /^[=+\-@\t\r]/.test(v) ? "'" + v : v; };
 function toCSV(rows) { const q = v => { v = cell(v); return /[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; }; return '\uFEFF' + [EXPORT_COLS.map(q).join(','), ...rows.map(r => EXPORT_COLS.map(c => q(r[c])).join(','))].join('\r\n'); }
@@ -2550,7 +2944,7 @@ function applyImport(pending, vids, unlinked) {
   const checked = !!($('#imp-videoonly', d) || {}).checked;
   const picks = pending.map((p, i) => ({ label: (val(`imp-label-${i}`) || '').trim(), res: val(`imp-res-${i}`) || '', vi: +val(`imp-video-${i}`) }));
   const exPicks = unlinked.map((s, j) => +(val(`imp-ex-${j}`) ?? -1));
-  if (P.example && (pending.length || vids.length)) { unlinkAll(); P = newProject('Untitled study'); resetSaveState(); turnCache.clear(); undoStack.length = 0; ui.sessionId = null; ui.selection.clear(); ui.filterPeople.clear(); ui.filterCode = ''; if (ui.drawerId) closeDrawer(true); }
+  if (P.example && (pending.length || vids.length)) { unlinkAll(); P = newProject('Untitled study'); resetSaveState(); turnCache.clear(); undoStack.length = 0; ui.sessionId = null; ui.selection.clear(); ui.filterPeople.clear(); ui.filterCode = ''; ui.filterRegion = ''; if (ui.drawerId) closeDrawer(true); }
   const assigned = new Set(); const added = []; const taken = [];
   pending.forEach((p, i) => {
     const pk = picks[i]; const label = uniqueLabel(pk.label || nextLabel(), taken); taken.push(label);
@@ -2591,7 +2985,7 @@ async function openProjectFile(file, handle) {
   }
   unlinkAll(); turnCache.clear(); snapCache.clear(); undoStack.length = 0;
   P = normalize(obj); P.example = false;
-  ui.sessionId = P.sessions[0] ? P.sessions[0].id : null; ui.selection.clear(); ui.filterPeople.clear(); ui.filterCode = ''; ui.dismissRelink = false;
+  ui.sessionId = P.sessions[0] ? P.sessions[0].id : null; ui.selection.clear(); ui.filterPeople.clear(); ui.filterCode = ''; ui.filterRegion = ''; ui.dismissRelink = false;
   if (ui.drawerId) closeDrawer(true);
   resetSaveState(file.name, handle); refresh();
   toast(`Opened ${P.name}.${P.sessions.some(s => s.videoName) ? ' Drop the session recordings to link them.' : ''}`, { ms: 6000 });
@@ -2603,7 +2997,7 @@ async function resetProject(kind) {
   }
   unlinkAll(); turnCache.clear(); snapCache.clear(); undoStack.length = 0;
   P = kind === 'example' ? buildExample() : newProject('Untitled study');
-  ui.sessionId = P.sessions[0] ? P.sessions[0].id : null; ui.selection.clear(); ui.filterPeople.clear(); ui.filterCode = ''; ui.boardSearch = ''; $('#board-search').value = '';
+  ui.sessionId = P.sessions[0] ? P.sessions[0].id : null; ui.selection.clear(); ui.filterPeople.clear(); ui.filterCode = ''; ui.filterRegion = ''; ui.boardSearch = ''; $('#board-search').value = '';
   if (ui.drawerId) closeDrawer(true);
   resetSaveState(); setView(kind === 'example' ? 'board' : 'transcripts'); refresh();
 }
@@ -2703,6 +3097,7 @@ function runAction(act, el) {
     case 'clear-example': resetProject('new'); break;
     case 'dismiss-relink': ui.dismissRelink = true; renderNotices(); break;
     case 'save-project': saveProject(false); break;
+    case 'autosave': toggleAutosave(); break;
     case 'save-as': saveProject(true); break;
     case 'open-project': openProjectPicker(); break;
     case 'legacy-open': openLegacy(); break;
@@ -2718,6 +3113,7 @@ function runAction(act, el) {
     case 'new-project': resetProject('new'); break;
     case 'relink': if (!id) return; ui.relinkTarget = id; $('#file-relink').click(); break;
     case 'session-settings': openSessionSettings(id); break;
+    case 'region-start': if (ui.view !== 'transcripts') setView('transcripts'); setRegionMode(ui.regionMode ? null : { step: 1 }); break;
     case 'board-filter': ui.filterPeople = new Set([id]); setView('board'); break;
     case 'new-group': {
       if (ui.view !== 'board') setView('board');
@@ -2792,6 +3188,16 @@ function bindEvents() {
   $('#session-list').addEventListener('click', e => { const b = e.target.closest('[data-session]'); if (b) selectSession(b.dataset.session); });
   const tx = $('#transcript');
   tx.addEventListener('click', e => {
+    const rge = e.target.closest('[data-region-edit]'); if (rge) { const s = currentSession(); const r = regionsOf(s).find(x => x.id === rge.dataset.regionEdit); if (r) openRegionDialog({ id: r.id, start: r.start, end: r.end }); return; }
+    if (ui.regionMode) {
+      // in region mode, a click or a selection in the transcript sets the start, then the end
+      const sr = selectionInTranscript();
+      if (sr && rangeText(sr).length > 1) { const els = $$('#transcript .cue').filter(el => sr.intersectsNode(el) && el.textContent.trim()); getSelection().removeAllRanges(); if (els.length) regionFromCueEls(els); return; }
+      const s = currentSession(); const cue = e.target.closest('.cue') || (e.target.closest('.turn') && e.target.closest('.turn').querySelector('.cue'));
+      if (cue && s) { e.preventDefault(); regionPoint(ui.regionMode.step === 1 ? s.cues[+cue.dataset.ci].s : s.cues[+cue.dataset.ci].e); }
+      return;
+    }
+    if (e.target.closest('.qh')) return;
     const ed = e.target.closest('[data-edit]'); if (ed) { startEdit(+ed.dataset.edit); return; }
     const act = e.target.closest('[data-ed]'); if (act) { if (act.dataset.ed === 'done') commitEdit(); else cancelEdit(); return; }
     const rv = e.target.closest('[data-revert]');
@@ -2805,12 +3211,16 @@ function bindEvents() {
   // hovering any part of a quote (or its marker) underlines the whole passage that the card holds
   let hlId = null;
   const setHl = id => {
+    if (ui.qdrag) return;
     if (id === hlId) return;
+    ui.hoverQuote = id;
     $$('#transcript .qs.hl').forEach(el => el.classList.remove('hl'));
     hlId = id;
     if (id) $$(`#transcript .qs[data-cards~="${id}"]`).forEach(el => el.classList.add('hl'));
+    placeHandles();
   };
   tx.addEventListener('mouseover', e => {
+    if (e.target.closest('.qh')) return;
     const mark = e.target.closest('.mark'); if (mark) { setHl(mark.dataset.open); return; }
     const cue = e.target.closest('.qs');
     if (!cue || ui.edit) { setHl(null); return; }
@@ -2859,7 +3269,37 @@ function bindEvents() {
   const seltool = $('#seltool');
   seltool.addEventListener('pointerdown', e => e.preventDefault());
   seltool.addEventListener('mousedown', e => e.preventDefault());
-  seltool.addEventListener('click', e => { const b = e.target.closest('[data-st]'); if (b) pullQuote(b.dataset.code || null); });
+  seltool.addEventListener('click', e => {
+    const b = e.target.closest('[data-st]'); if (!b) return;
+    if (b.dataset.st === 'region') { const r = selectionInTranscript(); const s = currentSession(); if (!r || !s) return; const els = $$('#transcript .cue').filter(el => r.intersectsNode(el) && el.textContent.trim()); if (!els.length) return; getSelection().removeAllRanges(); hideSelTool(); openRegionDialog({ start: s.cues[+els[0].dataset.ci].s, end: s.cues[+els[els.length - 1].dataset.ci].e }); return; }
+    pullQuote(b.dataset.code || null);
+  });
+  $('#region-bar').addEventListener('click', e => {
+    const b = e.target.closest('[data-rg]'); if (!b) return;
+    if (b.dataset.rg === 'cancel') setRegionMode(null); else regionPoint($('#player').currentTime || 0);
+  });
+  $('#session-meta').addEventListener('click', e => {
+    const go = e.target.closest('[data-region-go]'); if (go) { goRegion(go.dataset.regionGo); return; }
+    const ed = e.target.closest('[data-region-edit]'); if (ed) { const s = currentSession(); const r = regionsOf(s).find(x => x.id === ed.dataset.regionEdit); if (r) openRegionDialog({ id: r.id, start: r.start, end: r.end }); }
+  });
+  // drag handles on the ends of a quote
+  tx.addEventListener('pointerdown', e => { const h = e.target.closest('.qh'); if (h) startQuoteDrag(e, +h.dataset.qh); });
+
+  // resizable panels: drag the divider, or focus it and use the arrow keys. Sizes last until the page is closed.
+  const splitDrag = (el, apply, cur) => {
+    el.addEventListener('pointerdown', e => {
+      e.preventDefault(); el.setPointerCapture(e.pointerId); el.classList.add('active'); document.body.classList.add('resizing');
+      const mv = ev => apply(ev.clientX);
+      const end = () => { el.classList.remove('active'); document.body.classList.remove('resizing'); el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', end); el.removeEventListener('pointercancel', end); positionMarks(); };
+      el.addEventListener('pointermove', mv); el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+    });
+    el.addEventListener('keydown', e => { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); apply(cur() + (e.key === 'ArrowLeft' ? -24 : 24)); positionMarks(); });
+  };
+  const layout = $('.tx-layout');
+  const sideW = () => $('.tx-side').getBoundingClientRect().width;
+  splitDrag($('#split-side'), x => { const L = layout.getBoundingClientRect(); const w = clamp(x - L.left - 7, 220, Math.max(220, L.width - 380)); layout.style.setProperty('--side-w', Math.round(w) + 'px'); $('#split-side').setAttribute('aria-valuenow', Math.round(w)); }, () => layout.getBoundingClientRect().left + sideW() + 7);
+  const drawerW = () => $('#drawer').getBoundingClientRect().width;
+  splitDrag($('#split-drawer'), x => { const w = clamp(innerWidth - x, 320, Math.max(320, Math.min(980, innerWidth - 420))); document.documentElement.style.setProperty('--drawer-w', Math.round(w) + 'px'); if (ui.view === 'board') applyCam(); }, () => innerWidth - drawerW());
 
   // board
   const board = $('#view-board');
@@ -2875,12 +3315,13 @@ function bindEvents() {
     const gid = e.target.dataset.gtitle, tid = e.target.dataset.ttitle;
     if (gid && P.groups[gid]) { P.groups[gid].title = e.target.value.replace(/\n/g, ' '); autosize(e.target); changed(); }
     if (tid) { const t = P.themes.find(x => x.id === tid); if (t) { t.title = e.target.value.replace(/\n/g, ' '); autosize(e.target); changed(); } }
-    if (e.target.id === 'board-search') { ui.boardSearch = e.target.value; boardSearchRender(); }
+    if (e.target.id === 'board-search') { ui.boardSearch = e.target.value; ui.boardHitIdx = -1; boardSearchRender(); }
   });
   board.addEventListener('keydown', e => { if ((e.target.dataset.gtitle || e.target.dataset.ttitle) && e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
   board.addEventListener('change', e => {
     if (e.target.dataset.gtitle || e.target.dataset.ttitle) { renderSelBar(); if (ui.drawerId) renderDrawerGroup(); const fr = e.target.closest('.frame'); if (fr) { ui.labelH.set(fr.dataset.gframe || fr.dataset.tframe, fr.querySelector('.flabel').offsetHeight); const before = JSON.stringify([...Object.values(P.groups), ...P.themes].map(f => [f.y, f.h])); autoGrow(); if (JSON.stringify([...Object.values(P.groups), ...P.themes].map(f => [f.y, f.h])) !== before) { changed(); setTimeout(renderBoard, 0); } } return; }
     if (e.target.id === 'filter-code') { ui.filterCode = e.target.value; renderBoard(); }
+    else if (e.target.id === 'filter-region') { ui.filterRegion = e.target.value; renderBoard(); }
     else if (e.target.id === 'toggle-thumbs') { ui.thumbs = e.target.checked; renderBoard(); }
     else if (e.target.id === 'sel-move') {
       const v = e.target.value; if (!v) return; const ids = orderedSelection(); ui.selection.clear(); moveCardsTo(ids, v);
@@ -2900,6 +3341,9 @@ function bindEvents() {
     if (e.target.id === 'sel-clear') { ui.selection.clear(); renderBoard(); }
   });
   const boardSearchRender = debounce(() => renderBoard(), 200);
+  $('#board-search').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); renderBoard(); goBoardHit(e.shiftKey ? -1 : 1); } });
+  $('#board-prev').addEventListener('click', () => goBoardHit(-1));
+  $('#board-next').addEventListener('click', () => goBoardHit(1));
 
   // drawer
   $('#d-close').addEventListener('click', () => closeDrawer());
@@ -2921,13 +3365,32 @@ function bindEvents() {
     const c = P.cards[ui.drawerId]; if (!c) return;
     const snap = grabFrame(dv);
     if (!snap) { toast('The video isn\'t ready yet. Let it load, then grab the frame again.'); return; }
-    pushUndo('Grab frame'); c.snapshot = snap; c.snapshotTime = dv.currentTime; snapCache.delete(c.id);
+    pushUndo('Grab frame'); setSnaps(c, [...allSnaps(c), { d: snap, t: dv.currentTime }]); 
     changed(); renderDrawerSnap(); refreshSoon(); toast(`Grabbed the frame at ${tc(dv.currentTime)}`);
   });
-  $('#d-snap-remove').addEventListener('click', () => { const c = P.cards[ui.drawerId]; if (!c) return; pushUndo('Remove snapshot'); c.snapshot = null; c.snapshotTime = null; changed(); renderDrawerSnap(); refreshSoon(); });
+  $('#d-snaps').addEventListener('click', e => {
+    const c = P.cards[ui.drawerId]; if (!c) return; const snaps = allSnaps(c);
+    const del = e.target.closest('[data-snap-del]'), main = e.target.closest('[data-snap-main]'), seek = e.target.closest('[data-snap-seek]');
+    if (del) { pushUndo('Remove snapshot'); snaps.splice(+del.dataset.snapDel, 1); setSnaps(c, snaps); }
+    else if (main) { pushUndo('Change snapshot'); const [x] = snaps.splice(+main.dataset.snapMain, 1); snaps.unshift(x); setSnaps(c, snaps); }
+    else if (seek) { const x = snaps[+seek.dataset.snapSeek]; if (x && dv.getAttribute('src')) { dv.pause(); try { dv.currentTime = x.t; } catch (err) { /* not seekable */ } } return; }
+    else return;
+    changed(); renderDrawerSnap(); refreshSoon();
+  });
   $('#d-text').addEventListener('input', e => { const c = P.cards[ui.drawerId]; if (!c) return; c.text = e.target.value; autosize(e.target); changed(); refreshSoon(); });
   $('#d-note').addEventListener('input', e => { const c = P.cards[ui.drawerId]; if (!c) return; c.note = e.target.value; autosize(e.target); changed(); refreshSoon(); });
-  $('#d-code-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addCodeFromInput(); } });
+  const ci = $('#d-code-input');
+  ci.addEventListener('input', () => { ui.codeActive = 0; renderCodeSuggest(); });
+  ci.addEventListener('focus', renderCodeSuggest);
+  ci.addEventListener('blur', () => setTimeout(renderCodeSuggest, 150));
+  ci.addEventListener('keydown', e => {
+    const n = (ui.codeItems || []).length;
+    if (e.key === 'ArrowDown' && n) { e.preventDefault(); ui.codeActive = ((ui.codeActive || 0) + 1) % n; renderCodeSuggest(); }
+    else if (e.key === 'ArrowUp' && n) { e.preventDefault(); ui.codeActive = ((ui.codeActive || 0) - 1 + n) % n; renderCodeSuggest(); }
+    else if (e.key === 'Enter') { e.preventDefault(); addCodeFromInput(); }
+    else if (e.key === 'Escape' && ci.value) { e.preventDefault(); e.stopPropagation(); ci.value = ''; renderCodeSuggest(); }
+  });
+  $('#d-code-list').addEventListener('pointerdown', e => { const li = e.target.closest('[data-ci]'); if (li) { e.preventDefault(); chooseCodeItem(+li.dataset.ci); } });
   $('#d-code-add').addEventListener('click', addCodeFromInput);
   $('#d-group').addEventListener('change', e => {
     const c = P.cards[ui.drawerId]; if (!c) return;
@@ -2954,6 +3417,7 @@ function bindEvents() {
     const typing = isTyping(e.target);
     if (e.key === 'Escape') {
       if (popState) { hidePop(); return; }
+      if (ui.regionMode) { setRegionMode(null); return; }
       if (!$('#seltool').hidden) { hideSelTool(); getSelection().removeAllRanges(); return; }
       if (ui.drawerId) { closeDrawer(); return; }
       if (ui.selection.size) { ui.selection.clear(); if (ui.view === 'board') renderBoard(); return; }

@@ -10,7 +10,7 @@ It runs entirely in your browser from a file on your computer. It has no install
 2. The tool opens on a made-up example study. Click **Import files** to start your own; importing replaces the example.
 3. Choose your transcripts and recordings together, or drag them onto the page. A transcript and a recording with matching file names are paired automatically.
 4. In the review dialog, check each session's label (for example P1), which speaker is the researcher, and which recording goes with each transcript. Then click **Add**.
-5. Press **Ctrl+S** (**⌘S** on a Mac) to save a project file. Do this often. Nothing is saved automatically.
+5. Press **Ctrl+S** (**⌘S** on a Mac) to save a project file. In Chrome or Edge you can turn on **Autosave** instead; see [Saving and opening](#saving-and-opening).
 
 ## Workflow
 
@@ -22,9 +22,15 @@ It runs entirely in your browser from a file on your computer. It has no install
 - **Open a quote:** click anywhere on a highlighted quote, or on the small box beside its first line. Hovering over a quote underlines the whole passage, so you can see where it starts and ends.
   - Where two quotes overlap, clicking opens the more recent one.
   - Ending a text selection on a highlight doesn't open the card, so you can still select overlapping text.
+- **Quote colors:** each highlight takes the color of its card's first code, and so does the small box beside it. Quotes without a code are yellow. Each quote starts with a thin colored edge, so two quotes next to each other read as separate. Where quotes overlap, the shared words show both colors as stripes.
+- **Make a quote longer or shorter:** hover over a quote, or open its card, and handles appear at its start and end. Drag a handle to a new word; a dashed outline previews the new extent. The ends snap to whole words.
+  - The card's text and times update to match the transcript. If you had edited the card's text by hand, the toast tells you those edits were replaced.
+  - **Ctrl+Z / ⌘Z** puts the quote back.
 - **Play from a turn:** click a turn's timecode to play the recording from there. The transcript follows along as it plays.
 - **Add an observation:** press **O** or click **Add observation** while watching. This creates a card at the current moment with a frame from the video. Use it for things you saw rather than heard.
 - **Find words:** use the search box to find words in the current transcript.
+- **Resize the panels:** drag the divider between the video column and the transcript, or the left edge of the card panel. You can also focus a divider and use the arrow keys. Sizes last until you close the page.
+- **Mark regions:** label parts of a session, such as *Intro*, *Task 1* or *Wrap-up*. See [Regions](#regions).
 - **Fix a typo:** hover over a turn and click **Edit**. See [Fixing transcript typos](#fixing-transcript-typos).
 
 ### Cards
@@ -32,10 +38,33 @@ It runs entirely in your browser from a file on your computer. It has no install
 Clicking a card opens its panel. From there you can:
 
 - play the recording from that moment, and adjust the time by −5, −1, +1 or +5 seconds
-- click **Grab this frame** to attach a snapshot
+- click **Grab this frame** to attach a snapshot. After that, the button reads **Add this frame** and adds another, so a card can hold several moments.
+  - The first frame is the one shown on the board. A card with more shows a badge such as **+2** on its picture.
+  - Under each frame: click its time to show that moment, **Show on board** to make it the main frame, or **Remove**.
 - edit the quote and add a context note
 - turn codes on or off; **1–9** toggles the first nine codes
+- add a code by typing in the code box:
+  - The list shows existing codes that contain what you typed, anywhere in the name, with the closest first. **Enter** applies the highlighted one; **↑ / ↓** move through the list.
+  - **Create new code “…”** appears at the bottom only when no code has exactly that name, so you won't create a duplicate by accident.
+  - Choosing a code that's already applied removes it.
 - move the card to a group
+
+### Regions
+
+Regions label a stretch of a session, for example the first 20% as *Intro*. They're useful in multi-part interviews.
+
+1. Click **Mark region** above the transcript, or **Mark a region** in the session panel.
+2. Click the caption where the region starts, or select some words there. With a recording linked, you can click **Start at video time** instead.
+3. Click the caption where it ends, or select words, or click **End at video time**.
+4. Type a label, or click one you've used before, so the same label matches across sessions. Then click **Add region**.
+
+You can also select words and click **Region…** in the toolbar to make a region from just those captions. **Esc** cancels marking.
+
+- **In the transcript,** a region starts with a colored label, and its turns have a stripe of the same color down the left.
+- **In the session panel,** regions are listed with their times. Click a name to jump there, or **Edit** to rename it, change its times or delete it.
+- **On the board,** cards show their region's label and can be filtered by region.
+- **In the report and CSV,** each card names its region.
+- A card belongs to a region when its start time falls inside it. The same label used in several sessions has the same color everywhere.
 
 ### Board (affinity diagram)
 
@@ -71,7 +100,10 @@ The board is an endless whiteboard. Place cards anywhere, cluster them by eye, t
 
 **Also on the board**
 
-- **Filter:** filter by participant, code or text. Cards that don't match are dimmed.
+- **Find:** type in the search box to find cards. It works like Ctrl+F: it matches part of a word, ignores capitals, and looks in the quote, the note, **code names** and region labels.
+  - Matching cards get an orange outline and the matched letters are highlighted; other cards dim. Each frame shows how many of its cards match.
+  - The count shows *current/total*. **Enter** (or ↓) jumps to the next match and centers it on screen; **Shift+Enter** (or ↑) goes back.
+- **Filter:** filter by participant, code or region. Cards that don't match are dimmed.
 - **See who's behind a group:** each frame shows how many cards it holds and which participants they came from.
 - **Undo:** **Ctrl+Z / ⌘Z** undoes moves, resizes, grouping, code changes, deletes and transcript edits.
 
@@ -82,14 +114,14 @@ The board is an endless whiteboard. Place cards anywhere, cluster them by eye, t
 The **Report** view shows:
 
 - which participants contributed to each group
-- findings grouped by theme and group, with quotes, attributions and snapshots
+- findings grouped by theme and group, with quotes, attributions (including the region), and every snapshot on each card
 - code counts per participant
 
 From there you can:
 
 - **Copy report** and paste it into a doc or slides
 - **Download report** as a standalone HTML file with images and fonts embedded
-- **Download CSV:** one row per card. For FigJam, import the CSV, select the *Sticky note* column, and run *Convert to stickies*.
+- **Download CSV:** one row per card, with *Region* and *Snapshots* (how many frames) columns. For FigJam, import the CSV, select the *Sticky note* column, and run *Convert to stickies*.
 - **Copy as table** to paste straight into Google Sheets or Excel
 
 The report follows the board: groups and themes are whatever the frames hold, read from top left to bottom right. Cards outside any frame, and cards in the tray, are listed as *Not yet grouped*.
@@ -99,13 +131,20 @@ The report follows the board: groups and themes are whatever the frames hold, re
 | Action | How |
 |---|---|
 | Save | **Ctrl+S / ⌘S**, or the **Save** button |
+| Save every change automatically | **Autosave** button (Chrome and Edge only) |
 | Save to a new file | **More → Save as…** (Chrome and Edge only) |
 | Open a project | **More → Open project file…**, or drag the `.affinity.json` file onto the page |
 
-- **Nothing is saved automatically.** Closing or reloading the page discards unsaved changes. The header shows **Unsaved changes** and the Save button shows a dot until you save.
+- **Nothing is saved automatically unless you turn on Autosave.** Closing or reloading the page discards unsaved changes. The header shows **Unsaved changes** and the Save button shows a dot until you save.
+- **Autosave** (Chrome and Edge, with the page opened from your disk):
+  - Click **Autosave off** in the header. The browser asks where to save and what to call the file. After that, the button reads **Autosave on** with a green dot.
+  - About a second after each change, the project is written to that file. The header shows **Autosaving…**, then **Autosaved** with the time and file name.
+  - Click the button again to turn it off. It's also off each time you open the page or another project, so you choose the file deliberately.
+  - Autosave writes only the project file. Transcript fixes are written to your VTT files when you press **Save**.
+  - In Firefox and Safari, and inside the Claude app, the button explains that autosave isn't available there.
 - **In Chrome and Edge,** the first save asks where to put the file. After that, Save writes to the same file each time. A project opened with **Open project file…** also saves back to itself.
 - **In Firefox and Safari,** each save downloads a new copy of the project file.
-- **The project file holds:** transcripts, cards, codes, groups, themes, the board layout, snapshots and transcript edits.
+- **The project file holds:** transcripts, cards, codes, groups, themes, the board layout, regions, snapshots and transcript edits.
 - **It doesn't hold the recordings.** After opening a project, drop the MP4s onto the page again. They're matched to their sessions by file name.
 
 ## Fixing transcript typos
@@ -131,7 +170,7 @@ If a quote card contains the same words, the fix is applied to the card as well.
 - **No network access.** The file includes a security policy that tells the browser to block every network request. Even a bug in the tool couldn't send anything out. Its fonts are built into the file.
 - **Nothing is stored in the browser.** The tool uses no cookies, local storage or IndexedDB. Your work exists only in the open page and in files you save.
 - **Recordings never leave your disk.** The browser plays them directly from the file and never uploads or copies them.
-- **Files are written only when you act:** saving, exporting, or a transcript write-back you've given permission for.
+- **Files are written only when you act:** saving, exporting, a transcript write-back you've given permission for, or autosave to the file you picked when you turned it on.
 - **Opened project files are checked field by field before anything is shown,** so a tampered file can't run code in the page.
 - **CSV exports neutralize spreadsheet formulas.** A cell starting with `=`, `+`, `-` or `@` gets a leading apostrophe.
 
@@ -157,7 +196,8 @@ If a quote card contains the same words, the fix is applied to the card as well.
 | Shift+1 or Ctrl/⌘ 0 | Fit the whole board in view |
 | Delete | Delete the selected cards |
 | Ctrl/⌘ Z | Undo |
-| Esc | Close the card panel, or cancel a transcript edit |
+| Enter / Shift+Enter in board search | Next or previous match |
+| Esc | Cancel region marking, close the card panel, or cancel a transcript edit |
 
 ## Browser support
 
@@ -166,6 +206,7 @@ If a quote card contains the same words, the fix is applied to the card as well.
 | Import, code, cluster, report | Yes | Yes | Yes |
 | Play Zoom and Teams MP4s | Yes | Yes | Yes |
 | Save to the same file each time | Yes | No, downloads a new copy | No, downloads a new copy |
+| Autosave | Yes | No | No |
 | Write transcript fixes into the original VTT | Yes | No, download a corrected copy | No, download a corrected copy |
 
 ## File formats
